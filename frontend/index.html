@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediVisit - Gestión de Visitas</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ════════════════════════ PANTALLA DE AUTENTICACIÓN ════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-card">
+
+    <!-- Logo -->
+    <div class="auth-logo-wrap">
+      <img src="logo.jpeg" alt="Logo Hospital Luis A. Güemes" class="auth-logo-img">
+      <div>
+        <div class="auth-title">MediVisit</div>
+        <div class="auth-subtitle">Hospital Luis A. Güemes — Aguaray, Salta</div>
+      </div>
+    </div>
+
+    <!-- Alerta general -->
+    <div class="auth-alert" id="auth-alert"></div>
+
+    <!-- ── PANEL LOGIN ── -->
+    <div id="auth-panel-login">
+      <div class="auth-form-title">Iniciar sesión</div>
+
+      <div class="auth-group">
+        <label class="auth-label">Usuario</label>
+        <input type="text" class="auth-input" id="login-usuario" placeholder="Ingresá tu usuario" autocomplete="username">
+        <div class="auth-error-msg" id="err-login-usuario">Este campo es obligatorio.</div>
+      </div>
+
+      <div class="auth-group">
+        <label class="auth-label">Contraseña</label>
+        <input type="password" class="auth-input" id="login-password" placeholder="Ingresá tu contraseña" autocomplete="current-password">
+        <div class="auth-error-msg" id="err-login-password">Este campo es obligatorio.</div>
+      </div>
+
+      <button class="auth-btn" onclick="authLogin()">Ingresar</button>
+      <!-- El link "Crear cuenta" NO aparece — se oculta por JS si ya existe admin -->
+      <div id="auth-switch-login" class="auth-switch" style="display:none;">
+        <button class="auth-switch-link" onclick="authMostrarRegistro()">Configurar administrador</button>
+      </div>
+    </div>
+
+    <!-- ── PANEL REGISTRO (solo primera vez) ── -->
+    <div id="auth-panel-registro" style="display:none;">
+      <div class="auth-form-title" id="reg-form-title">⚙️ Configuración inicial — Crear administrador</div>
+      <p style="font-size:12px;color:#6b7280;margin-bottom:14px;">
+        Este paso solo ocurre una vez. Creá el usuario administrador del sistema.
+      </p>
+
+      <div class="auth-group">
+        <label class="auth-label">Nombre completo <span style="color:#ef4444;">*</span></label>
+        <input type="text" class="auth-input" id="reg-nombre" placeholder="Ej: Juan Pérez">
+        <div class="auth-error-msg" id="err-reg-nombre">Este campo es obligatorio.</div>
+      </div>
+
+      <div class="auth-group">
+        <label class="auth-label">Usuario <span style="color:#ef4444;">*</span></label>
+        <input type="text" class="auth-input" id="reg-usuario" placeholder="Ej: admin" autocomplete="username">
+        <div class="auth-error-msg" id="err-reg-usuario">Este campo es obligatorio.</div>
+      </div>
+
+      <div class="auth-group">
+        <label class="auth-label">Contraseña <span style="color:#ef4444;">*</span></label>
+        <input type="password" class="auth-input" id="reg-password" placeholder="Mínimo 4 caracteres" autocomplete="new-password">
+        <div class="auth-error-msg" id="err-reg-password">Mínimo 4 caracteres.</div>
+      </div>
+
+      <div class="auth-group">
+        <label class="auth-label">Confirmar contraseña <span style="color:#ef4444;">*</span></label>
+        <input type="password" class="auth-input" id="reg-password2" placeholder="Repetí la contraseña" autocomplete="new-password">
+        <div class="auth-error-msg" id="err-reg-password2">Las contraseñas no coinciden.</div>
+      </div>
+
+      <button class="auth-btn" onclick="authRegistrar()">Crear administrador</button>
+      <!-- Sin botón de volver — no hay usuario creado todavía -->
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════ SIDEBAR ════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="logo.jpeg" alt="Logo Hospital Luis A. Güemes" class="sidebar-logo-img">
+    <div class="logo-text">
+      <div class="logo-name">MediVisit</div>
+      <div class="logo-sub">Gestión de Visitas</div>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-item active" id="nav-panel" onclick="showSection('panel')">
+      <i class="ti ti-layout-dashboard"></i> Panel
+    </div>
+    <div class="nav-item" id="nav-pacientes" onclick="showSection('pacientes')">
+      <i class="ti ti-users"></i> Pacientes
+    </div>
+    <div class="nav-item" id="nav-visitas" onclick="showSection('visitas')">
+        <i class="ti ti-clipboard-heart"></i>
+        <span>Control de Visitas</span>
+    </div>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="nav-bottom-item" style="color:#ef4444;">
+      <i class="ti ti-logout" style="color:#ef4444;"></i> Cerrar sesión
+    </div>
+  </div>
+</aside>
+
+<!-- ════════════════════════ MAIN ════════════════════════ -->
+<main class="main">
+
+  <!--  SECCIÓN: PANEL  -->
+  <section class="section active" id="section-panel">
+    <div class="page-header">
+      <div class="page-header-left">
+        <div class="page-title">Panel de Control</div>
+        <div class="page-sub">Resumen general de visitas y pacientes</div>
+      </div>
+    </div>
+
+        <!-- Tarjetas de estadísticas -->
+    <div class="stats-grid">
+
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Pacientes</div>
+          <div class="stat-value" id="total-pacientes">0</div>
+          <div class="stat-detail">Total registrados</div>
+        </div>
+        <div class="stat-icon icon-blue">
+          <i class="ti ti-users"></i>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Visitas</div>
+          <div class="stat-value" id="total-visitas">0</div>
+          <div class="stat-detail">Registradas</div>
+        </div>
+        <div class="stat-icon icon-blue">
+          <i class="ti ti-calendar-event"></i>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Permanentes</div>
+          <div class="stat-value" id="total-permanentes">0</div>
+          <div class="stat-detail">Autorizadas</div>
+        </div>
+        <div class="stat-icon icon-orange">
+          <i class="ti ti-clock"></i>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Temporales</div>
+          <div class="stat-value" id="total-temporales">0</div>
+          <div class="stat-detail">Activas</div>
+        </div>
+        <div class="stat-icon icon-red">
+          <i class="ti ti-alert-triangle"></i>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Próximas visitas + Gráfico -->
+    <div class="panel-bottom">
+
+      <div class="card">
+          <div class="card-header">
+              <span class="card-title">Próximas Visitas</span>
+              <a class="link-blue" onclick="showSection('visitas')">
+                  Ver todas
+              </a>
+          </div>
+          <div id="proximas-visitas">
+          </div>
+      </div>
+
+      <div class="card">
+          <div class="card-header">
+              <span class="card-title">
+                  Visitas por Habitación
+              </span>
+          </div>
+
+          <div class="chart-container">
+
+              <canvas
+                  id="deptChart"
+                  role="img"
+                  aria-label="Visitas por habitación">
+              </canvas>
+
+          </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!--  SECCIÓN: PACIENTES  -->
+  <section class="section" id="section-pacientes">
+    <div class="page-header">
+      <div class="page-header-left">
+        <div class="page-title">Pacientes</div>
+        <div class="page-sub">5 pacientes registrados</div>
+      </div>
+      <button class="btn-primary" onclick="openModal('modal-nuevo-paciente')">
+        <i class="ti ti-plus"></i> Nuevo Paciente
+      </button>
+    </div>
+
+    <div class="search-wrap">
+      <i class="ti ti-search"></i>
+      <input class="search-input" type="text" placeholder="Buscar por nombre o documento..." oninput="filterPacientes(this.value)">
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Paciente</th>
+            <th>Documento</th>
+            <th>Habitación</th>
+            <th>Cama</th>
+            <th>Contacto</th>
+            <th>Sangre</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody-pacientes">
+          
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!--  SECCIÓN: VISITAS -->
+  <section class="section" id="section-visitas">
+    <div class="page-header">
+      <div class="page-header-left">
+        <div class="page-title">Control de Visitas</div>
+        <div class="page-sub">Administración de visitantes y visitas autorizadas</div>
+      </div>
+      <button class="btn-primary" onclick="openModal('modal-nueva-visita')">
+        <i class="ti ti-plus"></i> Nueva Visita
+      </button>
+    </div>
+
+    <div class="search-wrap">
+      <i class="ti ti-search"></i>
+      <input class="search-input" type="text" placeholder="Buscar por paciente o visitante..." oninput="filterVisitas(this.value)">
+    </div>
+
+    <div class="filter-tabs">
+      <button class="tab-btn active" onclick="filterByEstado('todas', this)">Todas</button>
+      <button class="tab-btn" onclick="filterByEstado('temporal', this)">Temporales</button>
+      <button class="tab-btn" onclick="filterByEstado('permanente', this)">Permanentes</button>
+    </div>
+
+    <div class="table-card">
+      <table>
+    <thead>
+    <tr>
+        <th>Paciente</th>
+        <th>Visitante</th>
+        <th>DNI</th>
+        <th>Teléfono</th>
+        <th>Parentesco</th>
+        <th>Fecha</th>
+        <th>Tipo</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+        <tbody id="tbody-visitas">
+        </tbody>
+        
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<!-- MODAL: NUEVO PACIENTE  -->
+<div class="modal-overlay" id="modal-nuevo-paciente" onclick="closeModalOutside(event, 'modal-nuevo-paciente')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Nuevo Paciente</span>
+      <button class="modal-close" onclick="closeModal('modal-nuevo-paciente')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nombre completo <span class="req">*</span></label>
+      <input type="text" class="form-input" id="paciente-nombre">
+      <div class="field-required-hint" id="hint-paciente-nombre">Este campo es obligatorio.</div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">Documento ID <span class="req">*</span></label>
+        <input type="text" class="form-input" id="paciente-documento">
+        <div class="field-required-hint" id="hint-paciente-documento">Este campo es obligatorio.</div>
+      </div>
+      <div>
+        <label class="form-label">Fecha de nacimiento</label>
+        <input type="date" class="form-input" id="paciente-fecha-nacimiento">
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">Género</label>
+        <select class="form-select" id="paciente-genero">
+          <option value="">Seleccionar</option>
+          <option>Masculino</option>
+          <option>Femenino</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Tipo de sangre</label>
+        <select class="form-select" id="paciente-sangre">
+          <option value="">Seleccionar</option>
+          <option>A+</option>
+          <option>A-</option>
+          <option>B+</option>
+          <option>B-</option>
+          <option>AB+</option>
+          <option>AB-</option>
+          <option>O+</option>
+          <option>O-</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">Teléfono</label>
+        <input type="tel" class="form-input" id="paciente-telefono">
+      </div>
+      <div>
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="paciente-email">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Dirección <span class="req">*</span></label>
+      <input type="text" class="form-input" id="paciente-direccion">
+      <div class="field-required-hint" id="hint-paciente-direccion">Este campo es obligatorio.</div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">Habitación</label>
+        <input type="text" class="form-input" placeholder="Ej: 201" id="paciente-habitacion">
+      </div>
+      <div>
+        <label class="form-label">Cama</label>
+        <input type="text" class="form-input" placeholder="Ej: A" id="paciente-cama">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Alergias</label>
+      <input type="text" class="form-input" placeholder="Separar con comas" id="paciente-alergias">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notas</label>
+      <textarea class="form-textarea"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-nuevo-paciente')">Cancelar</button>
+      <button class="btn-save" onclick="guardarPaciente()">
+          Guardar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!--  MODAL: EDITAR PACIENTE  -->
+<div class="modal-overlay" id="modal-editar-paciente" onclick="closeModalOutside(event, 'modal-editar-paciente')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Editar Paciente</span>
+      <button class="modal-close" onclick="closeModal('modal-editar-paciente')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nombre completo <span class="req">*</span></label>
+      <input type="text" class="form-input" id="editar-paciente-nombre">
+      <div class="field-required-hint" id="hint-editar-paciente-nombre">Este campo es obligatorio.</div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">Documento ID <span class="req">*</span></label>
+        <input type="text" class="form-input" id="editar-paciente-documento">
+        <div class="field-required-hint" id="hint-editar-paciente-documento">Este campo es obligatorio.</div>
+      </div>
+      <div>
+        <label class="form-label">Fecha de nacimiento</label>
+        <input type="date" class="form-input" id="editar-paciente-fecha">
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">Género</label>
+        <select class="form-select" id="editar-paciente-genero">
+          <option value="">Seleccionar</option>
+          <option selected>Femenino</option>
+          <option>Masculino</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Tipo de sangre</label>
+        <select class="form-select" id="editar-paciente-sangre">
+          <option value="">Seleccionar</option>
+          <option selected>A+</option>
+          <option>A-</option>
+          <option>B+</option>
+          <option>B-</option>
+          <option>AB+</option>
+          <option>AB-</option>
+          <option>O+</option>
+          <option>O-</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">Teléfono</label>
+        <input type="tel" class="form-input" id="editar-paciente-telefono">
+      </div>
+      <div>
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="editar-paciente-email">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Dirección <span class="req">*</span></label>
+      <input type="text" class="form-input" id="editar-paciente-direccion">
+      <div class="field-required-hint" id="hint-editar-paciente-direccion">Este campo es obligatorio.</div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">Habitación</label>
+        <input type="text" class="form-input" placeholder="Ej: 201" id="editar-paciente-habitacion">
+      </div>
+      <div>
+        <label class="form-label">Cama</label>
+        <input type="text" class="form-input" placeholder="Ej: A" id="editar-paciente-cama">
+      </div>
+    </div>    
+    <div class="form-group">
+      <label class="form-label">Alergias</label>
+      <input type="text" class="form-input" placeholder="Separar con comas" id="editar-paciente-alergias">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notas</label>
+      <textarea class="form-textarea" id="editar-paciente-notas"> </textarea>
+    </div>
+    <div class="modal-footer">
+
+      <button class="btn-cancel"
+      onclick="closeModal('modal-editar-paciente')">
+
+          Cancelar
+
+      </button>
+
+      <button class="btn-save"
+      onclick="guardarEdicionPaciente()">
+
+          Guardar
+
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<!--  MODAL: DETALLES PACIENTE  -->
+<div class="modal-overlay" id="modal-detalles-paciente" onclick="closeModalOutside(event,'modal-detalles-paciente')">
+  <div class="modal modal-detalle-wide">
+
+    <div class="modal-header">
+      <span class="modal-title">Ficha del Paciente</span>
+      <button class="modal-close" onclick="closeModal('modal-detalles-paciente')"><i class="ti ti-x"></i></button>
+    </div>
+
+    <!-- Cabecera avatar + datos principales -->
+    <div class="detalle-header">
+      <div class="detalle-avatar" id="detalle-avatar-letra"></div>
+      <div class="detalle-header-info">
+        <div class="detalle-nombre-big" id="detalle-nombre"></div>
+        <div class="detalle-sub-row">
+          <span class="detalle-chip chip-doc"><i class="ti ti-id-badge"></i>&nbsp;<span id="detalle-documento"></span></span>
+          <span class="detalle-chip chip-room"><i class="ti ti-door"></i>&nbsp;Hab. <span id="detalle-habitacion"></span> &mdash; Cama <span id="detalle-cama"></span></span>
+          <span class="detalle-chip chip-blood" id="detalle-chip-sangre"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información personal -->
+    <div class="detalle-section-title"><i class="ti ti-user"></i> Información personal</div>
+    <div class="detalle-grid">
+      <div class="detalle-field">
+        <div class="detalle-field-label">Fecha de nacimiento</div>
+        <div class="detalle-field-value" id="detalle-fecha">—</div>
+      </div>
+      <div class="detalle-field">
+        <div class="detalle-field-label">Género</div>
+        <div class="detalle-field-value" id="detalle-genero">—</div>
+      </div>
+      <div class="detalle-field">
+        <div class="detalle-field-label">Teléfono</div>
+        <div class="detalle-field-value" id="detalle-telefono">—</div>
+      </div>
+      <div class="detalle-field">
+        <div class="detalle-field-label">Email</div>
+        <div class="detalle-field-value" id="detalle-email">—</div>
+      </div>
+      <div class="detalle-field detalle-field-full">
+        <div class="detalle-field-label">Dirección</div>
+        <div class="detalle-field-value" id="detalle-direccion">—</div>
+      </div>
+    </div>
+
+    <!-- Información médica -->
+    <div class="detalle-section-title"><i class="ti ti-stethoscope"></i> Información médica</div>
+    <div class="detalle-grid">
+      <div class="detalle-field detalle-field-full">
+        <div class="detalle-field-label">Alergias</div>
+        <div class="detalle-field-value" id="detalle-alergias">—</div>
+      </div>
+      <div class="detalle-field detalle-field-full">
+        <div class="detalle-field-label">Notas clínicas</div>
+        <div class="detalle-field-value" id="detalle-notas">—</div>
+      </div>
+    </div>
+
+    <!-- Visitas registradas -->
+    <div class="detalle-section-title"><i class="ti ti-clipboard-heart"></i> Visitas registradas</div>
+    <div id="detalle-visitas-lista"></div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-detalles-paciente')">Cerrar</button>
+    </div>
+
+  </div>
+</div>
+
+<!--  MODAL: NUEVA VISITA -->
+<div class="modal-overlay" id="modal-nueva-visita" onclick="closeModalOutside(event, 'modal-nueva-visita')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Nueva Visita</span>
+      <button class="modal-close" onclick="closeModal('modal-nueva-visita')"><i class="ti ti-x"></i></button>
+    </div>
+    <h3 class="form-page-title">
+    <i class="ti ti-bed"></i>
+    Datos del paciente
+    </h3>
+
+    <div class="form-group">
+        <label class="form-label">
+            Paciente <span class="req">*</span>
+        </label>
+
+        <select class="form-select" id="visita-paciente">
+
+            <option value="">
+                Seleccionar paciente
+            </option>
+
+        </select>
+
+    </div>
+<h3 class="form-page-title">
+    <i class="ti ti-user"></i>
+    Datos del visitante
+</h3>
+
+<div class="form-row">
+    <div class="form-group">
+        <label class="form-label">Nombre <span class="req">*</span></label>
+        <input type="text" class="form-input" id="visitante-nombre">
+        <div class="field-required-hint" id="hint-visitante-nombre">Este campo es obligatorio.</div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Apellido <span class="req">*</span></label>
+        <input type="text" class="form-input" id="visitante-apellido">
+        <div class="field-required-hint" id="hint-visitante-apellido">Este campo es obligatorio.</div>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group">
+        <label class="form-label">Teléfono</label>
+        <input type="text" class="form-input" id="visitante-telefono">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Domicilio <span class="req">*</span></label>
+        <input type="text" class="form-input" id="visitante-domicilio">
+        <div class="field-required-hint" id="hint-visitante-domicilio">Este campo es obligatorio.</div>
+    </div>
+</div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">DNI <span class="req">*</span></label>
+        <input type="text" class="form-input" placeholder="Ej: 40123456" id="visita-dni">
+        <div class="field-required-hint" id="hint-visita-dni">Este campo es obligatorio.</div>
+      </div>
+      <div>
+        <label class="form-label">Parentesco <span class="req">*</span></label>
+        <select class="form-select" id="visita-parentesco" required><option value="" selected disabled>Seleccione un Parentesco</option>
+          <option value="Padre">Padre</option>
+            <option value="Madre">Madre</option>
+            <option value="Hermano">Hermano</option>
+            <option value="Hermana">Hermana</option>
+            <option value="Esposo/a">Esposo/a</option>
+            <option value="Hijo/a">Hijo/a</option>
+            <option value="Otro">Otro</option>
+
+        </select>
+        <div class="field-required-hint" id="hint-visita-Parentesco">Este campo es obligatorio.</div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">Fecha</label>
+        <input type="date" class="form-input" id="visita-fecha">
+      </div>
+      <div>
+        <label class="form-label">Hora de ingreso</label>
+        <input type="time" class="form-input" id="visita-ingreso">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Hora de salida</label>
+      <input type="time" class="form-input" id="visita-salida">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tipo de visita</label>
+      <select class="form-select" id="visita-tipo">
+
+          <option value="Temporal">
+              Temporal
+          </option>
+
+          <option value="Permanente">
+              Permanente
+          </option>
+
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Observaciones</label>
+      <textarea class="form-textarea"
+        placeholder="Observaciones de la visita..."
+        id="visita-observaciones">
+      </textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-nueva-visita')">Cancelar</button>
+      <button class="btn-save" onclick="guardarVisita()">Guardar</button>
+    </div>
+    <p style="font-size:12px;color:#6b7280;margin-top:6px;">
+    Máximo permitido: 2 visitantes por paciente.
+    </p>
+  </div>
+</div>
+
+<!--  MODAL: EDITAR VISITA (seguir editando) -->
+<div class="modal-overlay" id="modal-editar-visita" onclick="closeModalOutside(event, 'modal-editar-visita')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Editar Visita</span>
+      <button class="modal-close" onclick="closeModal('modal-editar-visita')"><i class="ti ti-x"></i></button>
+    </div>
+    <h3 class="form-page-title">
+    <i class="ti ti-bed"></i>
+    Datos del paciente
+    </h3>
+
+    <div class="form-group">
+        <label class="form-label">
+            Paciente <span class="req">*</span>
+        </label>
+
+        <select class="form-select" id="editar-visita-paciente">
+
+            <option value="">
+                Seleccionar paciente
+            </option>
+
+        </select>
+
+    </div>
+<h3 class="form-page-title">
+    <i class="ti ti-user"></i>
+    Datos del visitante
+</h3>
+
+<div class="form-row">
+    <div class="form-group">
+        <label class="form-label">Nombre <span class="req">*</span></label>
+        <input type="text" class="form-input" id="editar-visita-nombre">
+        <div class="field-required-hint" id="hint-editar-visita-nombre">Este campo es obligatorio.</div>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Apellido <span class="req">*</span></label>
+        <input type="text" class="form-input" id="editar-visita-apellido">
+        <div class="field-required-hint" id="hint-editar-visita-apellido">Este campo es obligatorio.</div>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group">
+        <label class="form-label">Teléfono</label>
+        <input type="text" class="form-input" id="editar-visita-telefono">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Domicilio <span class="req">*</span></label>
+        <input type="text" class="form-input" id="editar-visita-domicilio">
+        <div class="field-required-hint" id="hint-editar-visita-domicilio">Este campo es obligatorio.</div>
+    </div>
+</div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">DNI <span class="req">*</span></label>
+        <input type="text" class="form-input" placeholder="Ej: 40123456" id="editar-visita-dni">
+        <div class="field-required-hint" id="hint-editar-visita-dni">Este campo es obligatorio.</div>
+      </div>
+      <div>
+        <label class="form-label">Parentesco</label>
+        <select class="form-select" id="editar-visita-parentesco">
+          <option>Padre</option>
+            <option>Madre</option>
+            <option>Hermano</option>
+            <option>Hermana</option>
+            <option>Esposo/a</option>
+            <option>Hijo/a</option>
+            <option>Otro</option>
+
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">Fecha</label>
+        <input type="date" class="form-input" id="editar-visita-fecha">
+      </div>
+      <div>
+        <label class="form-label">Hora de ingreso</label>
+        <input type="time" class="form-input" id="editar-visita-ingreso">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Hora de salida</label>
+      <input type="time" class="form-input" id="editar-visita-salida">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tipo de visita</label>
+      <select class="form-select" id="editar-visita-tipo">
+
+          <option value="Temporal">
+              Temporal
+          </option>
+
+          <option value="Permanente">
+              Permanente
+          </option>
+
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Observaciones</label>
+      <textarea class="form-textarea"
+        placeholder="Observaciones de la visita..."
+        id="editar-visita-observaciones">
+      </textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-editar-visita')">Cancelar</button>
+      <button class="btn-save" onclick="guardarEdicionVisita()"> Guardar </button>
+    </div>
+    <p style="font-size:12px;color:#6b7280;margin-top:6px;">
+    Máximo permitido: 2 visitantes por paciente.
+    </p>
+  </div>
+</div>
+
+<!-- MODAL: DETALLE VISITA -->
+<div class="modal-overlay" id="modal-detalle-visita" onclick="closeModalOutside(event,'modal-detalle-visita')">
+  <div class="modal modal-detalle-wide">
+
+    <div class="modal-header">
+      <span class="modal-title">Detalle de Visita</span>
+      <button class="modal-close" onclick="closeModal('modal-detalle-visita')"><i class="ti ti-x"></i></button>
+    </div>
+
+    <!-- Cabecera visitante -->
+    <div class="detalle-header">
+      <div class="detalle-avatar" id="dv-avatar"></div>
+      <div class="detalle-header-info">
+        <div class="detalle-nombre-big" id="dv-nombre-completo"></div>
+        <div class="detalle-sub-row">
+          <span class="detalle-chip chip-doc"><i class="ti ti-id-badge"></i>&nbsp;<span id="dv-dni"></span></span>
+          <span class="detalle-chip chip-room" id="dv-badge-tipo"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paciente -->
+    <div class="detalle-section-title"><i class="ti ti-bed"></i> Paciente</div>
+    <div class="detalle-grid">
+      <div class="detalle-field detalle-field-full">
+        <div class="detalle-field-label">Nombre del paciente</div>
+        <div class="detalle-field-value" id="dv-paciente"></div>
+      </div>
+    </div>
+
+    <!-- Datos del visitante -->
+    <div class="detalle-section-title"><i class="ti ti-user"></i> Datos del visitante</div>
+    <div class="detalle-grid">
+      <div class="detalle-field">
+        <div class="detalle-field-label">Teléfono</div>
+        <div class="detalle-field-value" id="dv-telefono"></div>
+      </div>
+      <div class="detalle-field">
+        <div class="detalle-field-label">Parentesco</div>
+        <div class="detalle-field-value" id="dv-parentesco"></div>
+      </div>
+      <div class="detalle-field detalle-field-full">
+        <div class="detalle-field-label">Domicilio</div>
+        <div class="detalle-field-value" id="dv-domicilio"></div>
+      </div>
+    </div>
+
+    <!-- Datos de la visita -->
+    <div class="detalle-section-title"><i class="ti ti-calendar-event"></i> Datos de la visita</div>
+    <div class="detalle-grid">
+      <div class="detalle-field">
+        <div class="detalle-field-label">Fecha</div>
+        <div class="detalle-field-value" id="dv-fecha"></div>
+      </div>
+      <div class="detalle-field">
+        <div class="detalle-field-label">Tipo</div>
+        <div class="detalle-field-value" id="dv-tipo"></div>
+      </div>
+      <div class="detalle-field">
+        <div class="detalle-field-label">Hora de ingreso</div>
+        <div class="detalle-field-value" id="dv-ingreso"></div>
+      </div>
+      <div class="detalle-field">
+        <div class="detalle-field-label">Hora de salida</div>
+        <div class="detalle-field-value" id="dv-salida"></div>
+      </div>
+      <div class="detalle-field detalle-field-full">
+        <div class="detalle-field-label">Observaciones</div>
+        <div class="detalle-field-value" id="dv-observaciones"></div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-detalle-visita')">Cerrar</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
