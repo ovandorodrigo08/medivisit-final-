@@ -1015,24 +1015,24 @@ input, select, textarea {
    SOLUCIÓN MAESTRA PARA MENÚ DE ACCIONES EN COMPUTADORA
    ======================================================= */
 @media (min-width: 769px) {
-    /* 1. Ocultamos el botón de los 3 puntitos que no reacciona */
+    /* Ocultamos el botón de los 3 puntitos que no reacciona SOLO en PC */
     .dots-btn, th:last-child .dots-btn {
         display: none !important;
     }
 
-    /* 2. Forzamos a que el menú con los botones esté siempre visible */
+    /* Forzamos a que el menú con los botones esté siempre visible SOLO en PC */
     .dropdown-menu {
-        display: flex !important;          /* Se muestra en fila horizontal */
-        position: static !important;        /* Se integra directo en la celda */
-        box-shadow: none !important;        /* Chau sombras molestas */
-        border: none !important;            /* Sin bordes innecesarios */
-        background: transparent !important; /* Fondo limpio */
-        gap: 6px !important;               /* Separación entre botones */
+        display: flex !important;         
+        position: static !important;       
+        box-shadow: none !important;       
+        border: none !important;           
+        background: transparent !important;
+        gap: 6px !important;              
         width: auto !important;
         overflow: visible !important;
     }
 
-    /* 3. Volvemos lindos y compactos los botones en la PC */
+    /* Volvemos lindos y compactos los botones en la PC */
     .dropdown-item {
         display: inline-flex !important;
         align-items: center !important;
@@ -1048,7 +1048,6 @@ input, select, textarea {
         transition: all 0.2s ease !important;
     }
 
-    /* Colores individuales para identificarlos rápido al pasar el mouse */
     .dropdown-item:hover {
         background: #eff6ff !important;
         border-color: #3b82f6 !important;
@@ -1065,10 +1064,31 @@ input, select, textarea {
         color: #b91c1c !important;
     }
 
-    /* Le damos espacio suficiente a la columna de Acciones */
     th:last-child, td:last-child {
         min-width: 280px !important;
         text-align: center !important;
+    }
+}
+
+/* =======================================================
+   PREVENCIÓN ABSOLUTA PARA CELULARES (Restablece el diseño)
+   ======================================================= */
+@media (max-width: 768px) {
+    /* Le devuelve el control total al diseño del celular original */
+    .dots-btn {
+        display: flex !important; /* Reaparece el botón de 3 puntitos */
+    }
+    .dropdown-menu {
+        display: none !important; /* Se oculta por defecto para que no estorbe */
+        position: absolute !important;
+    }
+    /* Permite que JS lo maneje de forma limpia en el cel al hacer clic */
+    .dropdown-menu.open {
+        display: block !important;
+    }
+    .dropdown-item {
+        display: flex !important;
+        width: 100% !important;
     }
 }
 /* =======================================================
