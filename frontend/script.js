@@ -683,6 +683,22 @@ async function guardarVisita() {
     tipo:              document.getElementById("visita-tipo").value,
     observaciones:     document.getElementById("visita-observaciones").value,
   };
+  // === VALIDACIÓN DEL PARENTESCO (OBLIGATORIO) ===
+    const hintParentesco = document.getElementById('hint-visita-parentesco');
+   
+    // Si no seleccionó nada (la opción por defecto tiene value=""), frenamos el envío
+    if (!datos.parentesco || datos.parentesco.trim() === "") {
+        if (hintParentesco) {
+            hintParentesco.style.display = 'block'; // Muestra el cartel de "Este campo es obligatorio" en rojo
+        }
+        alert("Por favor, seleccione el parentesco antes de continuar.");
+        return; // 🔥 Freno de mano: Evita que el código siga hacia el fetch
+    } else {
+        if (hintParentesco) {
+            hintParentesco.style.display = 'none'; // Oculta el cartel si ya eligió una opción válida
+        }
+    }
+    // ===============================================
 
   try {
     const res = await fetch(`${API_URL}/visitas`, {
