@@ -305,7 +305,7 @@ body {
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
-  overflow: hidden;
+  overflow: visible !important;
 }
 table { width: 100%; border-collapse: collapse; }
 thead { background: #f9fafb; }
@@ -1135,4 +1135,4 @@ input, select, textarea {
         position: relative !important;
         min-width: 90px !important;
     }
-}
+  }
