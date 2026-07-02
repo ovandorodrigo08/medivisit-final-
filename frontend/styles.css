@@ -1010,3 +1010,33 @@ input, select, textarea {
         margin-bottom: 15px;
     }
 }
+/* =======================================================
+   RETOQUES DEL LOGO Y CONTENEDORES PARA DISPOSITIVOS MÓVILES
+   ======================================================= */
+@media (max-width: 768px) {
+   
+    /* 1. Achicamos el contenedor del logo en la parte superior */
+    /* Cambia '.logo-container' o la clase que use tu contenedor de logo si se llama distinto */
+    .sidebar-header, .logo-container, [class*="header"] {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 10px !important;
+        gap: 10px;
+    }
+
+    /* 2. Forzamos a que la imagen del logo sea súper compacta en celular */
+    /* Cambia '.logo-img' por el nombre de la clase de tu imagen o déjalo así para afectar a la imagen del menú */
+    .sidebar img, .logo-container img, [class*="sidebar"] img {
+        width: 60px !important;       /* El truco clave: pasa de gigante a tamaño ícono legible */
+        height: auto !important;
+        max-width: 60px !important;
+        margin: 0 auto !important;
+        border-radius: 6px;
+    }
+
+    /* 3. Ajuste fino de la grilla de Pacientes para que no se pegue al buscador */
+    .search-bar-container {
+        margin-bottom: 15px;
+    }
+}
