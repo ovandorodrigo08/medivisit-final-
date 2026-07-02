@@ -751,6 +751,28 @@ tbody tr:hover { background: #f9fafb; }
 .field-required-hint.visible {
   display: block;
 }
+/* Arreglo definitivo para que el menú de acciones no se corte en PC ni móvil */
+.table-container, table, tbody, tr {
+    overflow: visible !important;
+}
+
+td:last-child {
+    position: relative !important;
+    overflow: visible !important;
+}
+
+/* Fuerza a que la cajita flotante con las opciones se muestre por encima de todo */
+.dropdown-menu, .actions-menu, [class*="menu-acciones"] {
+    position: absolute !important;
+    right: 10px !important;
+    top: 40px !important; /* Lo baja un poquito abajo del botón de los 3 puntitos */
+    z-index: 99999 !important;
+    display: block !important; /* Si JavaScript le agrega una clase 'show', asegurate de que use esta propiedad */
+    background: white !important;
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.15) !important;
+}
 /* ══════════════════════════════════════════
    MODAL DETALLES PACIENTE
    ══════════════════════════════════════════ */
