@@ -959,3 +959,54 @@ input, select, textarea {
         gap: 15px;
     }
 }
+/* =======================================================
+   REGLAS EXCLUSIVAS PARA ARREGLAR LA BARRA LATERAL EN MÓVIL
+   ======================================================= */
+@media (max-width: 768px) {
+   
+    /* 1. Cambiamos la estructura de la página de horizontal a vertical */
+    /* Busca el contenedor que envuelve a la barra lateral y al contenido principal */
+    .app-container, .main-layout, body {
+        display: flex !important;
+        flex-direction: column !important; /* Pone el menú arriba y el contenido abajo */
+    }
+
+    /* 2. Ajustamos la barra lateral (Sidebar) */
+    /* Modifica esta clase por el nombre exacto que tenga tu menú lateral (ej: .sidebar, .menu-lateral) */
+    .sidebar, aside, [class*="sidebar"] {
+        width: 100% !important;        /* En celular ocupa todo el ancho superior */
+        min-width: 100% !important;
+        height: auto !important;       /* Altura automática para que no ocupe toda la pantalla */
+        min-height: auto !important;
+        padding: 10px !important;      /* Más compacto */
+        position: relative !important; /* Quita el modo fijo lateral */
+    }
+
+    /* 3. Hacemos que las opciones del menú se pongan en fila de costado en el celular */
+    .sidebar nav, .menu-items {
+        display: flex !important;
+        flex-direction: row !important; /* Opciones una al lado de la otra */
+        justify-content: space-around; /* Las distribuye prolijas */
+        gap: 5px !important;
+    }
+
+    /* Ajuste para que los botones del menú no queden gigantes */
+    .sidebar a, .menu-btn {
+        padding: 8px 12px !important;
+        font-size: 14px !important;
+    }
+
+    /* 4. Liberamos el contenedor del panel principal */
+    /* Modifica esta clase por el nombre de tu sección de la derecha (ej: .main-content, .dashboard) */
+    .main-content, main, .content, [class*="main-content"] {
+        width: 100% !important;
+        padding: 15px !important;     /* Espacio cómodo para las tarjetas */
+        margin-left: 0 !important;    /* Si tenías un margen para no pisar el menú, lo borramos */
+    }
+
+    /* 5. Tarjetas internas de visitas ahora ocupan el 100% real */
+    .card, .visit-card, .dashboard-cards > div {
+        width: 100% !important;
+        margin-bottom: 15px;
+    }
+}
