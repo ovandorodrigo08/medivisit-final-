@@ -960,7 +960,7 @@ input, select, textarea {
     }
 }
 /* =======================================================
-   DISEÑO MÓVIL OPTIMIZADO COMPLETO (CON SCROLL FORZADO)
+   DISEÑO MÓVIL OPTIMIZADO COMPLETO (CORRECCIÓN TOTAL)
    ======================================================= */
 @media (max-width: 768px) {
    
@@ -987,7 +987,7 @@ input, select, textarea {
         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    /* 3. Ajuste fino del logo compacto */
+    /* 3. Logo compacto */
     .sidebar img, .logo-container img, [class*="sidebar"] img, .sidebar-header img {
         width: 50px !important;
         max-width: 50px !important;
@@ -1025,46 +1025,53 @@ input, select, textarea {
         white-space: nowrap !important;
     }
 
-    .sidebar .logout-btn, [class*="cerrar-sesion"] {
-        margin-top: 5px !important;
-        padding: 6px !important;
-        font-size: 12px !important;
-        text-align: center !important;
-    }
-
-    /* 5. Contenido Principal */
+    /* 5. Contenido Principal (Ajustado para dar espacio a las tablas) */
     .main-content, main, .content, [class*="main-content"] {
         width: 100% !important;
         margin-left: 0 !important;
-        padding: 12px !important;
+        padding: 8px !important; /* Reducimos el padding para ganar pantalla */
         box-sizing: border-box !important;
     }
 
-    /* 6. CONTROL ABSOLUTO DE TABLAS (Pacientes y Visitas) */
-    .table-container, [class*="table-wrapper"], [class*="table"] {
+    /* 6. CORRECCIÓN PRÓXIMAS VISITAS (Evita que quede feo abajo) */
+    .proximas-visitas-container, [class*="proximas"], .cards-container + div {
+        height: auto !important;
+        min-height: auto !important;
+        max-height: 250px !important; /* Limita la altura */
+        overflow-y: auto !important;   /* Agrega scroll si hay muchos datos */
+        margin-bottom: 15px !important;
+        padding: 12px !important;
+    }
+
+    /* 7. CONTROL DE TABLAS FORZADO (Pacientes y Visitas) */
+    .table-container, [class*="table-wrapper"], [class*="table"], .section-content {
         display: block !important;
         width: 100% !important;
-        overflow-x: auto !important; /* Habilita el arrastre con el dedo */
+        max-width: 100% !important;
+        overflow-x: auto !important; /* 🔥 ACTIVA OBLIGATORIAMENTE EL SCROLL LATERAL */
         -webkit-overflow-scrolling: touch !important;
         background: #ffffff;
         border-radius: 8px;
         margin-top: 10px;
+        border: 1px solid #e0e0e0;
     }
 
-    table {
+    table, .main-table {
         width: 100% !important;
-        min-width: 680px !important; /* Mantiene la tabla extendida horizontalmente */
+        min-width: 750px !important; /* 🔥 ESTIRA la tabla para que aparezca la columna Acciones */
+        border-collapse: collapse !important;
     }
 
     th, td {
-        padding: 10px 8px !important;
+        padding: 12px 10px !important;
         font-size: 13px !important;
+        white-space: nowrap !important;
     }
 
-    /* 7. Dropdown Flotante para que no se oculte */
+    /* 8. Posicionamiento del Dropdown de Acciones (Ver detalle, Editar, Eliminar) */
     .dropdown-menu, .actions-menu, [class*="menu-acciones"], td:last-child div {
         position: absolute !important;
-        right: 10px !important;
+        right: 5px !important;
         top: 70% !important;
         z-index: 9999 !important;
         box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15) !important;
@@ -1074,5 +1081,6 @@ input, select, textarea {
    
     th:last-child, td:last-child {
         position: relative !important;
+        min-width: 90px !important;
     }
 }
