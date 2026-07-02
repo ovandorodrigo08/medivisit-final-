@@ -907,3 +907,55 @@ tbody tr:hover { background: #f9fafb; }
 
 .badge-temporal   { background: #fff7ed; color: #c2410c; }
 .badge-permanente { background: #eff6ff; color: #1d4ed8; }
+
+/* =======================================================
+   DISEÑO RESPONSIVE INTELIGENTE (COMPUTADORA Y CELULAR)
+   ======================================================= */
+
+/* 1. Reglas generales para que los elementos no se desborden nunca */
+input, select, textarea {
+    max-width: 100%;
+    box-sizing: border-box; /* Evita que el padding extra estire los campos hacia los costados */
+}
+
+/* 2. Filtro exclusivo para Celulares y Tablets (Pantallas menores a 768px) */
+@media (max-width: 768px) {
+   
+    /* El contenedor principal de los modales flotantes */
+    .modal {
+        width: 92% !important;      /* En celular ocupa casi todo el ancho disponible */
+        max-width: 420px;          /* Evita que quede gigante en tablets de lado */
+        margin: 15px auto;          /* Centrado vertical y horizontal compacto */
+        padding: 15px;              /* Espaciado interno cómodo para pantallas chicas */
+        max-height: 85vh;          /* Si el formulario es largo, no se sale de la pantalla */
+        overflow-y: auto;          /* Activa el scroll interno dentro del modal */
+        border-radius: 8px;
+    }
+
+    /* Las filas que en PC muestran inputs lado a lado (como Nombre y Apellido) */
+    .form-row {
+        display: flex;
+        flex-direction: column;    /* 🔥 En celular se apilan uno abajo del otro */
+        gap: 10px;                 /* Espaciado controlado entre campos */
+    }
+
+    /* Forzamos a que todos los controles ocupen el ancho del modal */
+    .form-input,
+    .form-select,
+    .btn,
+    select,
+    input[type="text"],
+    input[type="date"],
+    input[type="time"] {
+        width: 100% !important;    /* Ocupan todo el ancho del modal de forma prolija */
+        font-size: 16px;           /* Crucial: Evita que el celular haga un zoom molesto al escribir */
+        padding: 12px;             /* Botones e inputs más grandes para tocarlos fácil con el dedo */
+    }
+
+    /* Ajuste para las tarjetas del Panel Principal */
+    .cards-container {
+        display: flex;
+        flex-direction: column;    /* Las tarjetas informativas se apilan verticalmente */
+        gap: 15px;
+    }
+}
