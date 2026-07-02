@@ -305,7 +305,7 @@ body {
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
-  overflow: hidden;
+  overflow: visible !important;
 }
 table { width: 100%; border-collapse: collapse; }
 thead { background: #f9fafb; }
@@ -408,8 +408,8 @@ tbody tr:hover { background: #f9fafb; }
   border-radius: var(--radius-lg);
   width: 100%;
   max-width: 500px;
-  max-height: 90vh;
-  overflow-y: auto;
+  max-height: 85vh !important; /* Altura controlada */
+  overflow-y: auto !important;   /* 🔥 Permite deslizar si el contenido es largo en celulares */
   padding: 24px;
   box-shadow: var(--shadow-lg);
   transform: translateY(10px);
@@ -557,7 +557,6 @@ tbody tr:hover { background: #f9fafb; }
 /* ══════════════════════════════════════════
    AUTENTICACIÓN — Login & Registro
    ══════════════════════════════════════════ */
-
 #auth-screen {
   position: fixed;
   inset: 0;
@@ -567,11 +566,7 @@ tbody tr:hover { background: #f9fafb; }
   justify-content: center;
   z-index: 9999;
 }
-
-#auth-screen.hidden {
-  display: none;
-}
-
+#auth-screen.hidden { display: none; }
 .auth-card {
   background: #fff;
   border-radius: 16px;
@@ -594,7 +589,6 @@ tbody tr:hover { background: #f9fafb; }
   gap: 10px;
   margin-bottom: 28px;
 }
-
 .auth-logo-img {
   width: 68px;
   height: 68px;
@@ -604,42 +598,11 @@ tbody tr:hover { background: #f9fafb; }
   padding: 4px;
   border: 1px solid #e2e8f0;
 }
-
-.auth-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #111827;
-  text-align: center;
-}
-
-.auth-subtitle {
-  font-size: 13px;
-  color: #6b7280;
-  text-align: center;
-  margin-top: 2px;
-}
-
-.auth-form-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: #111827;
-  margin-bottom: 18px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.auth-group {
-  margin-bottom: 14px;
-}
-
-.auth-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: #374151;
-  margin-bottom: 6px;
-}
-
+.auth-title { font-size: 20px; font-weight: 700; color: #111827; text-align: center; }
+.auth-subtitle { font-size: 13px; color: #6b7280; text-align: center; margin-top: 2px; }
+.auth-form-title { font-size: 15px; font-weight: 600; color: #111827; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #e5e7eb; }
+.auth-group { margin-bottom: 14px; }
+.auth-label { display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 6px; }
 .auth-input {
   width: 100%;
   padding: 10px 12px;
@@ -652,28 +615,10 @@ tbody tr:hover { background: #f9fafb; }
   transition: border-color .15s, box-shadow .15s;
   font-family: inherit;
 }
-
-.auth-input:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
-}
-
-.auth-input.input-error {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
-}
-
-.auth-error-msg {
-  font-size: 11px;
-  color: #ef4444;
-  margin-top: 4px;
-  display: none;
-}
-
-.auth-error-msg.visible {
-  display: block;
-}
-
+.auth-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
+.auth-input.input-error { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.1); }
+.auth-error-msg { font-size: 11px; color: #ef4444; margin-top: 4px; display: none; }
+.auth-error-msg.visible { display: block; }
 .auth-btn {
   width: 100%;
   padding: 11px;
@@ -688,130 +633,28 @@ tbody tr:hover { background: #f9fafb; }
   transition: background .15s;
   font-family: inherit;
 }
-
 .auth-btn:hover { background: #1d4ed8; }
-
-.auth-switch {
-  text-align: center;
-  margin-top: 18px;
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.auth-switch-link {
-  color: #3b82f6;
-  cursor: pointer;
-  font-weight: 500;
-  text-decoration: none;
-  background: none;
-  border: none;
-  font-size: 13px;
-  font-family: inherit;
-}
-
+.auth-switch { text-align: center; margin-top: 18px; font-size: 13px; color: #6b7280; }
+.auth-switch-link { color: #3b82f6; cursor: pointer; font-weight: 500; text-decoration: none; background: none; border: none; font-size: 13px; font-family: inherit; }
 .auth-switch-link:hover { text-decoration: underline; }
-
-.auth-alert {
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  margin-bottom: 14px;
-  display: none;
-}
-
+.auth-alert { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 14px; display: none; }
 .auth-alert.visible { display: block; }
+.auth-alert.error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+.auth-alert.success { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
 
-.auth-alert.error {
-  background: #fef2f2;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
-}
-
-.auth-alert.success {
-  background: #f0fdf4;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
-}
-
-/* Campo obligatorio — borde rojo cuando está vacío y fue tocado */
 .form-input.field-required-error,
 .form-select.field-required-error,
 .form-textarea.field-required-error {
   border-color: #ef4444;
   box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
 }
+.field-required-hint { font-size: 11px; color: #ef4444; margin-top: 4px; display: none; }
+.field-required-hint.visible { display: block; }
 
-.field-required-hint {
-  font-size: 11px;
-  color: #ef4444;
-  margin-top: 4px;
-  display: none;
-}
-
-.field-required-hint.visible {
-  display: block;
-}
-/* Arreglo definitivo para que el menú de acciones no se corte en PC ni móvil */
-.table-container, table, tbody, tr {
-    overflow: visible !important;
-}
-
-td:last-child {
-    position: relative !important;
-    overflow: visible !important;
-}
-
-/* Arreglo definitivo para que el menú de acciones no se corte en PC ni móvil */
-.table-container, table, tbody, tr, td {
-    overflow: visible !important;
-}
-
-td:last-child {
-    position: relative !important;
-    overflow: visible !important;
-}
-
-/* Fuerza a que la cajita flotante aparezca y se posicione bien arriba de todo */
-.dropdown-menu, .actions-menu, [class*="menu-acciones"] {
-    display: block !important;       /* Lo hace visible sí o sí */
-    position: absolute !important;
-    right: 5px !important;
-    bottom: 100% !important;         /* 🔥 Lo levanta hacia ARRIBA del botón para que no se esconda abajo */
-    margin-bottom: 5px !important;    /* Separación mínima */
-    z-index: 999999 !important;       /* Al frente de absolutamente todo */
-    background: #ffffff !important;
-    border: 1px solid #dcdcdc !important;
-    border-radius: 6px !important;
-    box-shadow: 0px 5px 15px rgba(0,0,0,0.2) !important;
-    min-width: 130px !important;     /* Ancho mínimo para que entren los textos */
-    padding: 6px 0 !important;
-}
-
-/* Estilos internos de los botones para asegurar que se vean prolijos */
-.dropdown-menu button, .dropdown-menu a, .actions-menu button, [class*="menu-acciones"] button {
-    display: block !important;
-    width: 100% !important;
-    padding: 8px 12px !important;
-    text-align: left !important;
-    background: transparent !important;
-    border: none !important;
-    font-size: 13px !important;
-    color: #333333 !important;
-    cursor: pointer !important;
-}
-
-.dropdown-menu button:hover, .actions-menu button:hover {
-    background-color: #f5f5f5 !important;
-}
-/* ══════════════════════════════════════════
-   MODAL DETALLES PACIENTE
-   ══════════════════════════════════════════ */
-
+/* ── MODAL DETALLES PACIENTE ── */
 .modal-detalle-wide {
   max-width: 600px;
 }
-
-/* Cabecera con avatar */
 .detalle-header {
   display: flex;
   align-items: center;
@@ -821,7 +664,6 @@ td:last-child {
   padding: 18px 20px;
   margin-bottom: 20px;
 }
-
 .detalle-avatar {
   width: 56px;
   height: 56px;
@@ -836,37 +678,14 @@ td:last-child {
   flex-shrink: 0;
   border: 2px solid rgba(255,255,255,0.4);
 }
-
 .detalle-header-info { flex: 1; min-width: 0; }
-
-.detalle-nombre-big {
-  font-size: 17px;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 8px;
-}
-
-.detalle-sub-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.detalle-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 500;
-}
-
+.detalle-nombre-big { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.detalle-sub-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.detalle-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
 .chip-doc  { background: rgba(255,255,255,0.18); color: #fff; }
 .chip-room { background: rgba(255,255,255,0.18); color: #fff; }
 .chip-blood { background: #fef2f2; color: #b91c1c; font-weight: 700; }
 
-/* Títulos de sección */
 .detalle-section-title {
   display: flex;
   align-items: center;
@@ -880,159 +699,167 @@ td:last-child {
   padding-bottom: 6px;
   border-bottom: 2px solid #eff6ff;
 }
-
 .detalle-section-title i { font-size: 15px; }
-
-/* Grid de campos */
-.detalle-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.detalle-field {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 10px 13px;
-}
-
+.detalle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.detalle-field { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 13px; }
 .detalle-field-full { grid-column: 1 / -1; }
-
-.detalle-field-label {
-  font-size: 10px;
-  font-weight: 600;
-  color: #9ca3af;
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  margin-bottom: 4px;
-}
-
-.detalle-field-value {
-  font-size: 13px;
-  color: #111827;
-  font-weight: 500;
-  word-break: break-word;
-}
-
-/* Tabla de visitas dentro del modal */
-.detalle-visita-item {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 13px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  margin-bottom: 7px;
-}
-
+.detalle-field-label { font-size: 10px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+.detalle-field-value { font-size: 13px; color: #111827; font-weight: 500; word-break: break-word; }
+.detalle-visita-item { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; padding: 10px 13px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 7px; }
 .detalle-visita-item:last-child { margin-bottom: 0; }
-
-.detalle-visita-nombre {
-  font-size: 13px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.detalle-visita-meta {
-  font-size: 11px;
-  color: #6b7280;
-  margin-top: 2px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
+.detalle-visita-nombre { font-size: 13px; font-weight: 600; color: #111827; }
+.detalle-visita-meta { font-size: 11px; color: #6b7280; margin-top: 2px; display: flex; gap: 10px; flex-wrap: wrap; }
 .detalle-visita-meta i { font-size: 12px; }
-
-.detalle-sin-visitas {
-  text-align: center;
-  padding: 16px;
-  color: #9ca3af;
-  font-size: 13px;
-  background: #f9fafb;
-  border-radius: 8px;
-  border: 1px dashed #e5e7eb;
-}
-
+.detalle-sin-visitas { text-align: center; padding: 16px; color: #9ca3af; font-size: 13px; background: #f9fafb; border-radius: 8px; border: 1px dashed #e5e7eb; }
 .badge-temporal   { background: #fff7ed; color: #c2410c; }
 .badge-permanente { background: #eff6ff; color: #1d4ed8; }
 
 /* =======================================================
    DISEÑO RESPONSIVE INTELIGENTE (COMPUTADORA Y CELULAR)
    ======================================================= */
-
-/* 1. Reglas generales para que los elementos no se desborden nunca */
 input, select, textarea {
     max-width: 100%;
-    box-sizing: border-box; /* Evita que el padding extra estire los campos hacia los costados */
+    box-sizing: border-box;
 }
 
-/* 2. Filtro exclusivo para Celulares y Tablets (Pantallas menores a 768px) */
 @media (max-width: 768px) {
-   
-    /* El contenedor principal de los modales flotantes */
     .modal {
-        width: 92% !important;      /* En celular ocupa casi todo el ancho disponible */
-        max-width: 420px;          /* Evita que quede gigante en tablets de lado */
-        margin: 15px auto;          /* Centrado vertical y horizontal compacto */
-        padding: 15px;              /* Espaciado interno cómodo para pantallas chicas */
-        max-height: 85vh;          /* Si el formulario es largo, no se sale de la pantalla */
-        overflow-y: auto;          /* Activa el scroll interno dentro del modal */
+        width: 92% !important;
+        max-width: 420px;
+        margin: 15px auto;
+        padding: 15px;
+        max-height: 80vh !important;
+        overflow-y: auto !important; /* 🔥 Desplazamiento limpio garantizado */
         border-radius: 8px;
     }
-
-    /* Las filas que en PC muestran inputs lado a lado (como Nombre y Apellido) */
     .form-row {
         display: flex;
-        flex-direction: column;    /* 🔥 En celular se apilan uno abajo del otro */
-        gap: 10px;                 /* Espaciado controlado entre campos */
+        flex-direction: column;
+        gap: 10px;
     }
-
-    /* Forzamos a que todos los controles ocupen el ancho del modal */
-    .form-input,
-    .form-select,
-    .btn,
-    select,
-    input[type="text"],
-    input[type="date"],
-    input[type="time"] {
-        width: 100% !important;    /* Ocupan todo el ancho del modal de forma prolija */
-        font-size: 16px;           /* Crucial: Evita que el celular haga un zoom molesto al escribir */
-        padding: 12px;             /* Botones e inputs más grandes para tocarlos fácil con el dedo */
+    .form-input, .form-select, .btn, select, input[type="text"], input[type="date"], input[type="time"] {
+        width: 100% !important;
+        font-size: 16px;
+        padding: 12px;
     }
-
-    /* Ajuste para las tarjetas del Panel Principal */
     .cards-container {
         display: flex;
-        flex-direction: column;    /* Las tarjetas informativas se apilan verticalmente */
+        flex-direction: column;
         gap: 15px;
     }
+   
+    /* Layout Móvil */
+    body, .app-container, .main-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        overflow-x: hidden !important;
+    }
+    .sidebar, aside, [class*="sidebar"] {
+        width: 100% !important;
+        min-width: 100% !important;
+        height: auto !important;
+        position: relative !important;
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 10px !important;
+        margin: 0 !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .sidebar img, .logo-container img, [class*="sidebar"] img, .sidebar-header img {
+        width: 50px !important;
+        max-width: 50px !important;
+        height: 50px !important;
+        object-fit: contain !important;
+        margin: 0 auto 8px auto !important;
+        display: block !important;
+    }
+    .sidebar-header h2, .sidebar-header p {
+        font-size: 14px !important;
+        text-align: center;
+        margin: 2px 0 !important;
+    }
+    .sidebar nav, .menu-items, [class*="nav"] {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        width: 100% !important;
+        padding: 5px 0 !important;
+    }
+    .sidebar a, .menu-btn, .sidebar nav a {
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+        border-radius: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+        white-space: nowrap !important;
+    }
+    .main-content, main, .content, [class*="main-content"] {
+        width: 100% !important;
+        margin-left: 0 !important;
+        padding: 8px !important;
+        box-sizing: border-box !important;
+    }
+    .proximas-visitas-container, [class*="proximas"], .cards-container + div {
+        height: auto !important;
+        min-height: auto !important;
+        max-height: 250px !important;
+        overflow-y: auto !important;
+        margin-bottom: 15px !important;
+        padding: 12px !important;
+    }
+    .table-container, [class*="table-wrapper"], [class*="table"], .section-content {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        background: #ffffff;
+        border-radius: 8px;
+        margin-top: 10px;
+        border: 1px solid #e0e0e0;
+    }
+    table, .main-table {
+        width: 100% !important;
+        min-width: 750px !important;
+    }
+    th, td {
+        padding: 12px 10px !important;
+        white-space: nowrap !important;
+    }
 }
+
 /* =======================================================
-   SOLUCIÓN MAESTRA PARA MENÚ DE ACCIONES EN COMPUTADORA
+   SOLUCIÓN PARA MENÚ DE ACCIONES (COMPUTADORA Y MÓVIL)
    ======================================================= */
+.table-container, table, tbody, tr, td {
+    overflow: visible !important;
+}
+td:last-child {
+    position: relative !important;
+    overflow: visible !important;
+}
+
 @media (min-width: 769px) {
-    /* Ocultamos el botón de los 3 puntitos que no reacciona SOLO en PC */
     .dots-btn, th:last-child .dots-btn {
         display: none !important;
     }
-
-    /* Forzamos a que el menú con los botones esté siempre visible SOLO en PC */
     .dropdown-menu {
-        display: flex !important;         
-        position: static !important;       
-        box-shadow: none !important;       
-        border: none !important;           
+        display: flex !important;        
+        position: static !important;      
+        box-shadow: none !important;      
+        border: none !important;          
         background: transparent !important;
-        gap: 6px !important;              
+        gap: 6px !important;             
         width: auto !important;
         overflow: visible !important;
     }
-
-    /* Volvemos lindos y compactos los botones en la PC */
     .dropdown-item {
         display: inline-flex !important;
         align-items: center !important;
@@ -1047,13 +874,11 @@ input, select, textarea {
         cursor: pointer !important;
         transition: all 0.2s ease !important;
     }
-
     .dropdown-item:hover {
         background: #eff6ff !important;
         border-color: #3b82f6 !important;
         color: #1d4ed8 !important;
     }
-
     .dropdown-item.danger {
         color: #ef4444 !important;
         border-color: #fecaca !important;
@@ -1063,50 +888,39 @@ input, select, textarea {
         border-color: #ef4444 !important;
         color: #b91c1c !important;
     }
-
     th:last-child, td:last-child {
         min-width: 280px !important;
         text-align: center !important;
     }
 }
 
-/* =======================================================
-   PREVENCIÓN ABSOLUTA PARA CELULARES (Diseño Limpio)
-   ======================================================= */
 @media (max-width: 768px) {
-    /* 1. Mantenemos activo el botón de 3 puntitos */
     .dots-btn {
         display: flex !important;
     }
-
-    /* 2. La cajita flotante ahora se ubica a la derecha y no rompe la tabla */
     .dropdown-menu {
         display: none !important;
         position: absolute !important;
-        right: 10px !important;
-        top: 100% !important;
-        background: #ffffff !important;
-        border: 1px solid #e5e7eb !important;
-        border-radius: 8px !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
+        right: 5px !important;
+        bottom: 100% !important; /* Despliega hacia arriba para evitar cortes */
+        margin-bottom: 5px !important;
         z-index: 999999 !important;
-        min-width: 130px !important; /* Ancho fijo para que no se estire */
-        width: auto !important;
+        background: #ffffff !important;
+        border: 1px solid #dcdcdc !important;
+        border-radius: 6px !important;
+        box-shadow: 0px 5px 15px rgba(0,0,0,0.2) !important;
+        min-width: 130px !important;
+        padding: 6px 0 !important;
         overflow: hidden !important;
-        padding: 4px 0 !important;
     }
-
-    /* 3. 🔥 ESTO SÍ ACTIVA EL MENÚ EN EL CELULAR */
     .dropdown-menu.open {
         display: block !important;
     }
-
-    /* 4. Corregimos los botones internos para que sean compactos y en lista */
     .dropdown-item {
         display: flex !important;
         align-items: center !important;
         gap: 8px !important;
-        width: 100% !important; /* Ocupa el ancho de la pequeña cajita */
+        width: 100% !important;
         padding: 10px 14px !important;
         font-size: 13px !important;
         color: #374151 !important;
@@ -1115,137 +929,10 @@ input, select, textarea {
         text-align: left !important;
         cursor: pointer !important;
     }
-
     .dropdown-item:hover {
         background: #f3f4f6 !important;
     }
-
     .dropdown-item.danger {
         color: #ef4444 !important;
     }
 }
-/* =======================================================
-   DISEÑO MÓVIL OPTIMIZADO COMPLETO (CORRECCIÓN TOTAL)
-   ======================================================= */
-@media (max-width: 768px) {
-   
-    /* 1. Ajustes del Layout Principal */
-    body, .app-container, .main-layout {
-        display: flex !important;
-        flex-direction: column !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-        overflow-x: hidden !important;
-    }
-
-    /* 2. Barra Lateral a Barra Superior */
-    .sidebar, aside, [class*="sidebar"] {
-        width: 100% !important;
-        min-width: 100% !important;
-        height: auto !important;
-        position: relative !important;
-        display: flex !important;
-        flex-direction: column !important;
-        padding: 10px !important;
-        margin: 0 !important;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    /* 3. Logo compacto */
-    .sidebar img, .logo-container img, [class*="sidebar"] img, .sidebar-header img {
-        width: 50px !important;
-        max-width: 50px !important;
-        height: 50px !important;
-        object-fit: contain !important;
-        margin: 0 auto 8px auto !important;
-        display: block !important;
-    }
-
-    .sidebar-header h2, .sidebar-header p {
-        font-size: 14px !important;
-        text-align: center;
-        margin: 2px 0 !important;
-    }
-
-    /* 4. Botones de Navegación en fila */
-    .sidebar nav, .menu-items, [class*="nav"] {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: center !important;
-        flex-wrap: wrap !important;
-        gap: 6px !important;
-        width: 100% !important;
-        padding: 5px 0 !important;
-    }
-
-    .sidebar a, .menu-btn, .sidebar nav a {
-        padding: 8px 12px !important;
-        font-size: 13px !important;
-        border-radius: 6px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        margin: 0 !important;
-        white-space: nowrap !important;
-    }
-
-    /* 5. Contenido Principal (Ajustado para dar espacio a las tablas) */
-    .main-content, main, .content, [class*="main-content"] {
-        width: 100% !important;
-        margin-left: 0 !important;
-        padding: 8px !important; /* Reducimos el padding para ganar pantalla */
-        box-sizing: border-box !important;
-    }
-
-    /* 6. CORRECCIÓN PRÓXIMAS VISITAS (Evita que quede feo abajo) */
-    .proximas-visitas-container, [class*="proximas"], .cards-container + div {
-        height: auto !important;
-        min-height: auto !important;
-        max-height: 250px !important; /* Limita la altura */
-        overflow-y: auto !important;   /* Agrega scroll si hay muchos datos */
-        margin-bottom: 15px !important;
-        padding: 12px !important;
-    }
-
-    /* 7. CONTROL DE TABLAS FORZADO (Pacientes y Visitas) */
-    .table-container, [class*="table-wrapper"], [class*="table"], .section-content {
-        display: block !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: auto !important; /* 🔥 ACTIVA OBLIGATORIAMENTE EL SCROLL LATERAL */
-        -webkit-overflow-scrolling: touch !important;
-        background: #ffffff;
-        border-radius: 8px;
-        margin-top: 10px;
-        border: 1px solid #e0e0e0;
-    }
-
-    table, .main-table {
-        width: 100% !important;
-        min-width: 750px !important; /* 🔥 ESTIRA la tabla para que aparezca la columna Acciones */
-        border-collapse: collapse !important;
-    }
-
-    th, td {
-        padding: 12px 10px !important;
-        font-size: 13px !important;
-        white-space: nowrap !important;
-    }
-
-    /* 8. Posicionamiento del Dropdown de Acciones (Ver detalle, Editar, Eliminar) */
-    .dropdown-menu, .actions-menu, [class*="menu-acciones"], td:last-child div {
-        position: absolute !important;
-        right: 5px !important;
-        top: 70% !important;
-        z-index: 9999 !important;
-        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15) !important;
-        background-color: #ffffff !important;
-        border-radius: 8px !important;
-    }
-   
-    th:last-child, td:last-child {
-        position: relative !important;
-        min-width: 90px !important;
-    }
-  }
