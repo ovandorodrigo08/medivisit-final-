@@ -305,7 +305,7 @@ body {
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
-  overflow: visible !important;
+  overflow: hidden;
 }
 table { width: 100%; border-collapse: collapse; }
 thead { background: #f9fafb; }
@@ -1009,6 +1009,66 @@ input, select, textarea {
         display: flex;
         flex-direction: column;    /* Las tarjetas informativas se apilan verticalmente */
         gap: 15px;
+    }
+}
+/* =======================================================
+   SOLUCIÓN MAESTRA PARA MENÚ DE ACCIONES EN COMPUTADORA
+   ======================================================= */
+@media (min-width: 769px) {
+    /* 1. Ocultamos el botón de los 3 puntitos que no reacciona */
+    .dots-btn, th:last-child .dots-btn {
+        display: none !important;
+    }
+
+    /* 2. Forzamos a que el menú con los botones esté siempre visible */
+    .dropdown-menu {
+        display: flex !important;          /* Se muestra en fila horizontal */
+        position: static !important;        /* Se integra directo en la celda */
+        box-shadow: none !important;        /* Chau sombras molestas */
+        border: none !important;            /* Sin bordes innecesarios */
+        background: transparent !important; /* Fondo limpio */
+        gap: 6px !important;               /* Separación entre botones */
+        width: auto !important;
+        overflow: visible !important;
+    }
+
+    /* 3. Volvemos lindos y compactos los botones en la PC */
+    .dropdown-item {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 6px 10px !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        border-radius: 6px !important;
+        border: 1px solid #e5e7eb !important;
+        background: #ffffff !important;
+        color: #374151 !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+    }
+
+    /* Colores individuales para identificarlos rápido al pasar el mouse */
+    .dropdown-item:hover {
+        background: #eff6ff !important;
+        border-color: #3b82f6 !important;
+        color: #1d4ed8 !important;
+    }
+
+    .dropdown-item.danger {
+        color: #ef4444 !important;
+        border-color: #fecaca !important;
+    }
+    .dropdown-item.danger:hover {
+        background: #fef2f2 !important;
+        border-color: #ef4444 !important;
+        color: #b91c1c !important;
+    }
+
+    /* Le damos espacio suficiente a la columna de Acciones */
+    th:last-child, td:last-child {
+        min-width: 280px !important;
+        text-align: center !important;
     }
 }
 /* =======================================================
