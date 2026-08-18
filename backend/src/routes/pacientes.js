@@ -86,7 +86,7 @@ router.post('/', async (req, res) => {
     });
   } catch (err) {
     if (err.code === '23505') {
-      return res.status(400).json({ error: 'Ya existe un paciente con ese documento' });
+      return res.status(400).json({ error: 'Ya existe un paciente con ese documento o gmail o telefono. prueba cambiar esos datos' });
     }
     console.error('POST /pacientes error:', err.message);
     res.status(500).json({ error: 'Error al crear paciente' });

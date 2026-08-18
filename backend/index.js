@@ -1,12 +1,13 @@
 // src/index.js
+const setupDatabase = require('./src/db/schema');
 require('dotenv').config();
 const express = require('express');
-const cors    = require('cors');
+const cors = require('cors');
 
-const pacientesRouter = require('./routes/pacientes');
-const visitasRouter   = require('./routes/visitas');
+const pacientesRouter = require('./src/routes/pacientes');
+const visitasRouter = require('./src/routes/visitas');
 
-const app  = express();
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ── Middlewares ───────────────────────────────
@@ -23,7 +24,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/pacientes', pacientesRouter);
-app.use('/api/visitas',   visitasRouter);
+app.use('/api/visitas', visitasRouter);
 
 // ── Ruta no encontrada ────────────────────────
 app.use((req, res) => {
@@ -31,7 +32,8 @@ app.use((req, res) => {
 });
 
 // ── Iniciar servidor ──────────────────────────
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  await setupDatabase();
   console.log(`🚀 MediVisit backend corriendo en http://localhost:${PORT}`);
   console.log(`📋 Endpoints disponibles:`);
   console.log(`   GET    /api/pacientes`);

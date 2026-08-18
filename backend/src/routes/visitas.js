@@ -1,24 +1,24 @@
 // src/routes/visitas.js
 const express = require('express');
-const router  = express.Router();
-const pool    = require('../db/pool');
+const router = express.Router();
+const pool = require('../db/pool');
 
 // Helper: mapea fila DB → objeto frontend
 function mapVisita(v) {
   return {
-    id:                 v.id,
-    paciente:           v.paciente_nombre,
-    nombreVisitante:    v.nombre_visitante,
-    apellidoVisitante:  v.apellido_visitante,
-    dni:                v.dni,
-    telefono:           v.telefono,
-    domicilio:          v.domicilio,
-    parentesco:         v.parentesco,
-    fecha:              v.fecha ? v.fecha.toISOString().split('T')[0] : '',
-    horaIngreso:        v.hora_ingreso  || '',
-    horaSalida:         v.hora_salida   || '',
-    tipo:               v.tipo,
-    observaciones:      v.observaciones || '',
+    id: v.id,
+    paciente: v.paciente_nombre,
+    nombreVisitante: v.nombre_visitante,
+    apellidoVisitante: v.apellido_visitante,
+    dni: v.dni,
+    telefono: v.telefono,
+    domicilio: v.domicilio,
+    parentesco: v.parentesco,
+    fecha: v.fecha ? v.fecha.toISOString().split('T')[0] : '',
+    horaIngreso: v.hora_ingreso || '',
+    horaSalida: v.hora_salida || '',
+    tipo: v.tipo,
+    observaciones: v.observaciones || '',
   };
 }
 
@@ -40,6 +40,7 @@ router.get('/:id', async (req, res) => {
     if (result.rows.length === 0) return res.status(404).json({ error: 'Visita no encontrada' });
     res.json(mapVisita(result.rows[0]));
   } catch (err) {
+    console.error('GET /visitas/:id error:', err.message);
     res.status(500).json({ error: 'Error al obtener visita' });
   }
 });
@@ -47,61 +48,64 @@ router.get('/:id', async (req, res) => {
 // POST /api/visitas — crear
 router.post('/', async (req, res) => {
   const { paciente, nombreVisitante, apellidoVisitante, dni, telefono,
-          domicilio, parentesco, fecha, horaIngreso, horaSalida, tipo, observaciones } = req.body;
-          
-console.log("Tipo recibido:", tipo);
+    domicilio, parentesco, fecha, horaIngreso, horaSalida, tipo, observaciones } = req.body;
+
+  console.log("Tipo recibido:", tipo);
 
   if (!paciente || !nombreVisitante || !apellidoVisitante || !dni || !domicilio) {
     return res.status(400).json({ error: 'paciente, nombre, apellido, dni y domicilio son obligatorios' });
   }
-  // evitar visitas duplicados
-  const visitaExistente = await pool.query(
-  `SELECT id
-  FROM visitas
-  WHERE paciente_nombre = $1
-  AND fecha = $2
-  LIMIT 1`,
-  [paciente_nombre, fecha] 
-  );
 
-  if (visitaExistente.rows.length > 0) {
-    return res.status(400).json({
-      error: `Este paciente ya tiene una visita registrada para esa fecha.`
-    });
-  }
-  // Validar máximo de 2 visitantes permanentes
-if (tipo === "Permanente") {
-    const resultado = await pool.query(
+  try {
+    // Evitar visitas duplicadas para el mismo paciente en la misma fecha
+    const visitaExistente = await pool.query(
+      `SELECT id
+       FROM visitas
+       WHERE paciente_nombre = $1
+       AND fecha = $2
+       LIMIT 1`,
+      [paciente, fecha]
+    );
+
+    if (visitaExistente.rows.length > 0) {
+      return res.status(400).json({
+        error: `Este paciente ya tiene una visita registrada para esa fecha.`
+      });
+    }
+
+    // Validar máximo de 2 visitantes permanentes
+    if (tipo === "Permanente") {
+      const resultado = await pool.query(
         `SELECT COUNT(*) AS total
          FROM visitas
          WHERE paciente_nombre = $1
          AND tipo = 'Permanente'`,
         [paciente]
-    );
+      );
 
-    if (parseInt(resultado.rows[0].total) >= 2) {
+      if (parseInt(resultado.rows[0].total) >= 2) {
         return res.status(400).json({
-            error: "Máximo permitido: 2 visitantes por paciente."
+          error: "Máximo permitido: 2 visitantes por paciente."
         });
+      }
     }
-}
-//validar maximo de 2 visitantes temporales
-if (tipo === "Temporal") {
-  const resultado = await pool.query(
-     `SELECT COUNT(*) AS total
-     FROM visitas
-     WHERE paciente_nombre = $1
-     AND tipo = 'Temporal'`,
-     [paciente]
-  );
-  if (parseInt(resultado.rows[0].total) >= 2) {
-    return res.status(400).json({
-      error: "Maximo permitido: 2 visitantes temporales por pacientes."
-    });
-  }
-}
 
-  try {
+    // Validar máximo de 2 visitantes temporales
+    if (tipo === "Temporal") {
+      const resultado = await pool.query(
+        `SELECT COUNT(*) AS total
+         FROM visitas
+         WHERE paciente_nombre = $1
+         AND tipo = 'Temporal'`,
+        [paciente]
+      );
+      if (parseInt(resultado.rows[0].total) >= 2) {
+        return res.status(400).json({
+          error: "Máximo permitido: 2 visitantes temporales por paciente."
+        });
+      }
+    }
+
     const result = await pool.query(
       `INSERT INTO visitas
         (paciente_nombre, nombre_visitante, apellido_visitante, dni, telefono,
@@ -109,9 +113,9 @@ if (tipo === "Temporal") {
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
        RETURNING *`,
       [paciente, nombreVisitante, apellidoVisitante, dni, telefono || null,
-       domicilio, parentesco || null, fecha || null,
-       horaIngreso || null, horaSalida || null,
-       tipo || 'Temporal', observaciones || null]
+        domicilio, parentesco || null, fecha || null,
+        horaIngreso || null, horaSalida || null,
+        tipo || 'Temporal', observaciones || null]
     );
     res.status(201).json(mapVisita(result.rows[0]));
   } catch (err) {
@@ -123,7 +127,7 @@ if (tipo === "Temporal") {
 // PUT /api/visitas/:id — actualizar
 router.put('/:id', async (req, res) => {
   const { paciente, nombreVisitante, apellidoVisitante, dni, telefono,
-          domicilio, parentesco, fecha, horaIngreso, horaSalida, tipo, observaciones } = req.body;
+    domicilio, parentesco, fecha, horaIngreso, horaSalida, tipo, observaciones } = req.body;
 
   if (!paciente || !nombreVisitante || !apellidoVisitante || !dni || !domicilio) {
     return res.status(400).json({ error: 'paciente, nombre, apellido, dni y domicilio son obligatorios' });
@@ -138,9 +142,9 @@ router.put('/:id', async (req, res) => {
        WHERE id=$13
        RETURNING *`,
       [paciente, nombreVisitante, apellidoVisitante, dni, telefono || null,
-       domicilio, parentesco || null, fecha || null,
-       horaIngreso || null, horaSalida || null,
-       tipo || 'Temporal', observaciones || null, req.params.id]
+        domicilio, parentesco || null, fecha || null,
+        horaIngreso || null, horaSalida || null,
+        tipo || 'Temporal', observaciones || null, req.params.id]
     );
     if (result.rows.length === 0) return res.status(404).json({ error: 'Visita no encontrada' });
     res.json({ mensaje: 'Visita actualizada', id: req.params.id });
