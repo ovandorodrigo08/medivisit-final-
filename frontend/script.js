@@ -17,7 +17,7 @@ let indiceVisitaEditando = null;
 // ── CARGA DE DATOS ──
 
 // URL base de la API
-const API_URL = 'https://medivisit-final.onrender.com/api';
+const API_URL = 'https://medivisit-final-1.onrender.com';
 // const API_URL = 'http://localhost:3000/api';
 
 async function cargarDatos() {
