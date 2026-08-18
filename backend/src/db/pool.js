@@ -3,11 +3,14 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 const pool = new Pool({
-  host:     process.env.DB_HOST     || process.env.PGHOST     || 'localhost',
-  port:     parseInt(process.env.DB_PORT || process.env.PGPORT) || 5432,
-  database: process.env.DB_NAME     || process.env.PGDATABASE || 'medivisit',
-  user:     process.env.DB_USER     || process.env.PGUSER     || 'postgres',
-  password: process.env.DB_PASSWORD || process.env.PGPASSWORD || '',
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT),
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  ssl: {
+    rejectUnauthorized: false // Permite la conexión SSL con Neon
+  }
 });
 
 pool.connect((err, client, release) => {
