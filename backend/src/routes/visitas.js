@@ -55,14 +55,13 @@ console.log("Tipo recibido:", tipo);
     return res.status(400).json({ error: 'paciente, nombre, apellido, dni y domicilio son obligatorios' });
   }
   // evitar visitas duplicados
-  const visitaExistente = await
-  pool.query(
+  const visitaExistente = await pool.query(
   `SELECT id
   FROM visitas
   WHERE paciente_nombre = $1
   AND fecha = $2
-  LIMIT 1`
-  [pacientes, fecha] 
+  LIMIT 1`,
+  [paciente_nombre, fecha] 
   );
 
   if (visitaExistente.rows.length > 0) {
