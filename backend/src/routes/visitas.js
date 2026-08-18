@@ -54,6 +54,22 @@ console.log("Tipo recibido:", tipo);
   if (!paciente || !nombreVisitante || !apellidoVisitante || !dni || !domicilio) {
     return res.status(400).json({ error: 'paciente, nombre, apellido, dni y domicilio son obligatorios' });
   }
+  // evitar visitas duplicados
+  const visitaExistente = await
+  pool.query(
+  `SELECT id
+  FROM visitas
+  WHERE paciente_nombre = $1
+  AND fecha = $2
+  LIMIT 1`
+  [pacientes, fecha] 
+  );
+
+  if (visitaExistente.rows.length > 0) {
+    return res.status(400).json({
+      error: `Este paciente ya tiene una visita registrada para esa fecha.`
+    });
+  }
   // Validar máximo de 2 visitantes permanentes
 if (tipo === "Permanente") {
     const resultado = await pool.query(
