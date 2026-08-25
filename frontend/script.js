@@ -588,6 +588,7 @@ function verDetallesPaciente(indice) {
     } else {
       chipSangre.style.display = "none";
     }
+  }
 
   document.getElementById("detalle-fecha").textContent     = paciente.fechaNacimiento || "—";
   document.getElementById("detalle-genero").textContent    = paciente.genero          || "—";
@@ -1034,5 +1035,4 @@ function verDetallesVisita(indice) {
 
     openModal("modal-detalle-visita");
 }
-
 ;
