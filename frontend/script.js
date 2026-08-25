@@ -135,7 +135,7 @@ function renderGrafico(){
 
     return visitas.filter(visita =>
       pacientesHabitacion.some(
-        p => p.nombre === visita.paciente
+        p => (p.nombre || '').trim() === (visita.paciente || '').trim()
       )
     ).length;
 
@@ -521,7 +521,7 @@ async function recargarTodo() {
 
 async function guardarPaciente() {
   const datos = {
-    nombre:          document.getElementById("paciente-nombre").value,
+    nombre:          document.getElementById("paciente-nombre").value.trim(),
     documento:       document.getElementById("paciente-documento").value,
     fechaNacimiento: document.getElementById("paciente-fecha-nacimiento").value,
     genero:          document.getElementById("paciente-genero").value,
@@ -588,7 +588,6 @@ function verDetallesPaciente(indice) {
     } else {
       chipSangre.style.display = "none";
     }
-  }
 
   document.getElementById("detalle-fecha").textContent     = paciente.fechaNacimiento || "—";
   document.getElementById("detalle-genero").textContent    = paciente.genero          || "—";
@@ -600,7 +599,7 @@ function verDetallesPaciente(indice) {
 
   const visitasLista = document.getElementById("detalle-visitas-lista");
   if (visitasLista) {
-    const visitasPaciente = visitas.filter(v => v.paciente === paciente.nombre);
+    const visitasPaciente = visitas.filter(v => (v.paciente || '').trim() === (paciente.nombre || '').trim());
     if (visitasPaciente.length === 0) {
       visitasLista.innerHTML = `<div class="detalle-sin-visitas"><i class="ti ti-calendar-off"></i> Sin visitas registradas</div>`;
     } else {
@@ -628,7 +627,7 @@ function verDetallesPaciente(indice) {
 async function guardarEdicionPaciente() {
   const p = pacientes[indicePacienteEditando];
   const datos = {
-    nombre:          document.getElementById("editar-paciente-nombre").value,
+    nombre:          document.getElementById("editar-paciente-nombre").value.trim(),
     documento:       document.getElementById("editar-paciente-documento").value,
     fechaNacimiento: document.getElementById("editar-paciente-fecha").value,
     genero:          document.getElementById("editar-paciente-genero").value,
