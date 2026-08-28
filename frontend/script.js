@@ -1035,4 +1035,78 @@ function verDetallesVisita(indice) {
 
     openModal("modal-detalle-visita");
 }
+//  CONTROL DE TIEMPO DE VISITA
+
+document.addEventListener('DOMContentLoaded', () => {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+});
+
+function abrirModalNuevaVisita() {
+  openModal('modal-nueva-visita');
+  cargarHorarioActual();
+  const limiteInput = document.getElementById('visita-limite');
+  if (limiteInput) limiteInput.value = 30;
+}
+
+function cargarHorarioActual() {
+  const ingresoInput = document.getElementById('visita-ingreso');
+  if (!ingresoInput) return;
+  const ahora = new Date();
+  ingresoInput.value =
+    String(ahora.getHours()).padStart(2, '0') + ':' +
+    String(ahora.getMinutes()).padStart(2, '0');
+}
+
+async function guardarVisitaConControlTiempo() {
+  const ingresoInput = document.getElementById('visita-ingreso');
+  const limiteInput  = document.getElementById('visita-limite');
+  const salidaInput  = document.getElementById('visita-salida');
+
+  const horarioInicio   = ingresoInput.value;
+  const duracionMinutos = parseInt(limiteInput.value, 10) || 30;
+
+  if (horarioInicio) {
+    const [h, m] = horarioInicio.split(':').map(Number);
+    const finDate = new Date();
+    finDate.setHours(h, m + duracionMinutos, 0, 0);
+    salidaInput.value =
+      String(finDate.getHours()).padStart(2, '0') + ':' +
+      String(finDate.getMinutes()).padStart(2, '0');
+  }
+
+  await guardarVisita();
+
+  const modal = document.getElementById('modal-nueva-visita');
+  const seGuardoOk = !modal.classList.contains('open');
+
+  if (seGuardoOk && horarioInicio) {
+    iniciarControlDeTiempo(horarioInicio, duracionMinutos);
+  }
+}
+
+function iniciarControlDeTiempo(horarioInicio, duracionMinutos) {
+  const [h, m] = horarioInicio.split(':').map(Number);
+  const inicio = new Date();
+  inicio.setHours(h, m, 0, 0);
+
+  const fin = new Date(inicio.getTime() + duracionMinutos * 60000);
+  const msRestantes = fin.getTime() - Date.now();
+
+  if (msRestantes <= 0) return;
+  setTimeout(mostrarAvisoFinVisita, msRestantes);
+}
+
+function mostrarAvisoFinVisita() {
+  const titulo  = 'Tiempo de visita finalizado';
+  const mensaje = 'Se le acabó el tiempo de visita.';
+
+  if ('Notification' in window && Notification.permission === 'granted') {
+    const notif = new Notification(titulo, { body: mensaje, requireInteraction: true });
+    notif.onclick = () => window.focus();
+  } else {
+    alert(`${titulo}: ${mensaje}`);
+  }
+}
 ;
