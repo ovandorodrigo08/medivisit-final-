@@ -1044,9 +1044,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function abrirModalNuevaVisita() {
+  if ('Notification' in window &&  Notification.permission === 'default'){
+    Notification,requestPermission();
+  }
   openModal('modal-nueva-visita');
   cargarHorarioActual();
-  const limiteInput = document.getElementById('visita-limite');
+  const limiteInput =document.getElementById('visita-limite');
   if (limiteInput) limiteInput.value = 30;
 }
 
@@ -1102,11 +1105,11 @@ function mostrarAvisoFinVisita() {
   const titulo  = 'Tiempo de visita finalizado';
   const mensaje = 'Se le acabó el tiempo de visita.';
 
-  if ('Notification' in window && Notification.permission === 'granted') {
-    const notif = new Notification(titulo, { body: mensaje, requireInteraction: true });
+  const banner = document.getElementById('aviso-tiempo-visita');
+  if(banner) banner.classList.add('visible');
+
+  if('Notification' in window && Notification.permission === 'granted'){
+    const notif = new Notification(titulo, {body: mensaje, requireInteraction: true});
     notif.onclick = () => window.focus();
-  } else {
-    alert(`${titulo}: ${mensaje}`);
   }
-}
-;
+};
