@@ -1112,7 +1112,7 @@ function mostrarAvisoFinVisita() {
     const notif = new Notification(titulo, {body: mensaje, requireInteraction: true});
     notif.onclick = () => window.focus();
   }
-  function cerrarAvisoTiempo() {
+window.cerrarAvisoTiempo = function() {
     const aviso = document.getElementById('aviso-tiempo-visita');
     if (aviso) {
       aviso.classList.remove('visible');
