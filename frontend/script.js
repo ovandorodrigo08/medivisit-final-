@@ -1045,7 +1045,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function abrirModalNuevaVisita() {
   if ('Notification' in window &&  Notification.permission === 'default'){
-    Notification,requestPermission();
+    Notification.requestPermission();
   }
   openModal('modal-nueva-visita');
   cargarHorarioActual();
