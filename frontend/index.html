@@ -610,7 +610,7 @@
 
     <!-- ── COMPONENTE DE CÁMARA INTEGRADO EN EL FORMULARIO ── -->
     <div class="form-group" style="grid-column: span 2;">
-      <label >Foto de Indetificacion / Visita</label>
+      <label  class="form-label">Foto de Identificacion / Visita</label>
         <div id="camara-preview" class="camara-preview-box">
           <i class="ti ti-camera"></i>
           <span>Sin foto capturada</span>
@@ -618,10 +618,10 @@
         <input type="hidden" id="foto-visita-input" name="foto">
         
         <div style="display: flex; gap: 8px; margin-top: 8px;">
-        <button type="button" class="btn btn-secondary" onclick="abrircamara()">
-        <i class="ti ti-camera"></i> tomar foto
+        <button type="button" class= "btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="abrircamara()">
+        <i class="ti ti-camera"></i> Tomar foto
         </button>
-        <button type="button" class="btn btn-danger" id="btn-retomar-foto" onclick="limpiarfoto()" style="display:none ;"></button>
+        <button type="button" class="btn-cancel" id="btn-retomar-foto" onclick="limpiarfoto()" style="display:none ; padding: 6px 12px; font-size: 13px; color: #ef4444; border-color: #fca5a5;">
         <i class="ti ti-trash"></i> Quitar Foto
       </button>
      </div>
