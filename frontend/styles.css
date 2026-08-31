@@ -940,23 +940,38 @@ td:last-child {
   position: fixed;
   top: 20px;
   right: 20px;
-  background: #ef4444;
-  color: white;
-  padding: 14px 18px;
-  border-radius: 10px;
+  background: var(--red);
+  color: var(--white);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
   display: none;
   align-items: center;
   gap: 10px;
   z-index: 9999;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  font-size: 14px;
+  box-shadow: var(--shadow-lg);
+  font-size: 13px;
+  font-weight: 500;
 }
-.aviso-flotante.visible { display: flex; }
+
+.aviso-flotante.visible {
+  display: flex;
+}
+
 .aviso-flotante button {
-  background: none;
+  background: transparent;
   border: none;
-  color: white;
+  color: var(--white);
   cursor: pointer;
   font-size: 16px;
   margin-left: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  transition: background .15s;
+}
+
+.aviso-flotante button:hover {
+  background: rgba(255, 255, 255, 0.2);
 }

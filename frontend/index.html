@@ -888,9 +888,11 @@
 <!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <div id="aviso-tiempo-visita" class="aviso-flotante">
-  <i class="ti ti-bell-ringing"></i>
+  <i class="ti ti-clock-exclamation"></i>
   <span>se le acabo el tiempo de visita </span>
-  <button onclick="document.getElementById('aviso-tiempo-visita').classList.remove('visible')"></button>
+  <button type="button" onclick="cerrarAvisoTiempo()" aria-label="Cerrar">
+    <i class="ti ti-x"></i>
+  </button>
 </div>
 <script src="script.js"></script>
 </body>
