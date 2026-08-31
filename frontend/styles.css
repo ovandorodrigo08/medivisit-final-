@@ -975,3 +975,28 @@ td:last-child {
 .aviso-flotante button:hover {
   background: rgba(255, 255, 255, 0.2);
 }
+/* ── CAPTURA DE FOTO DE VISITANTES ── */
+.camara-preview-box {
+  width: 100%;
+  height: 140px;
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background-color: #f8fafc;
+  color: #64748b;
+  overflow: hidden;
+}
+
+.camara-preview-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.camara-preview-box i {
+  font-size: 28px;
+}

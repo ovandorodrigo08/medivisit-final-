@@ -80,7 +80,6 @@
       </div>
 
       <button class="auth-btn" onclick="authRegistrar()">Crear administrador</button>
-      <!-- Sin botón de volver — no hay usuario creado todavía -->
     </div>
 
   </div>
@@ -119,7 +118,7 @@
 <!-- ════════════════════════ MAIN ════════════════════════ -->
 <main class="main">
 
-  <!--  SECCIÓN: PANEL  -->
+  <!-- SECCIÓN: PANEL -->
   <section class="section active" id="section-panel">
     <div class="page-header">
       <div class="page-header-left">
@@ -128,7 +127,7 @@
       </div>
     </div>
 
-        <!-- Tarjetas de estadísticas -->
+    <!-- Tarjetas de estadísticas -->
     <div class="stats-grid">
 
       <div class="stat-card">
@@ -199,20 +198,18 @@
           </div>
 
           <div class="chart-container">
-
               <canvas
                   id="deptChart"
                   role="img"
                   aria-label="Visitas por habitación">
               </canvas>
-
           </div>
       </div>
 
     </div>
   </section>
 
-  <!--  SECCIÓN: PACIENTES  -->
+  <!-- SECCIÓN: PACIENTES -->
   <section class="section" id="section-pacientes">
     <div class="page-header">
       <div class="page-header-left">
@@ -243,13 +240,12 @@
           </tr>
         </thead>
         <tbody id="tbody-pacientes">
-          
         </tbody>
       </table>
     </div>
   </section>
 
-  <!--  SECCIÓN: VISITAS -->
+  <!-- SECCIÓN: VISITAS -->
   <section class="section" id="section-visitas">
     <div class="page-header">
       <div class="page-header-left">
@@ -274,28 +270,27 @@
 
     <div class="table-card">
       <table>
-    <thead>
-    <tr>
-        <th>Paciente</th>
-        <th>Visitante</th>
-        <th>DNI</th>
-        <th>Teléfono</th>
-        <th>Parentesco</th>
-        <th>Fecha</th>
-        <th>Tipo</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
+        <thead>
+          <tr>
+            <th>Paciente</th>
+            <th>Visitante</th>
+            <th>DNI</th>
+            <th>Teléfono</th>
+            <th>Parentesco</th>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
         <tbody id="tbody-visitas">
         </tbody>
-        
       </table>
     </div>
   </section>
 
 </main>
 
-<!-- MODAL: NUEVO PACIENTE  -->
+<!-- MODAL: NUEVO PACIENTE -->
 <div class="modal-overlay" id="modal-nuevo-paciente" onclick="closeModalOutside(event, 'modal-nuevo-paciente')">
   <div class="modal">
     <div class="modal-header">
@@ -378,14 +373,12 @@
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal('modal-nuevo-paciente')">Cancelar</button>
-      <button class="btn-save" onclick="guardarPaciente()">
-          Guardar
-      </button>
+      <button class="btn-save" onclick="guardarPaciente()">Guardar</button>
     </div>
   </div>
 </div>
 
-<!--  MODAL: EDITAR PACIENTE  -->
+<!-- MODAL: EDITAR PACIENTE -->
 <div class="modal-overlay" id="modal-editar-paciente" onclick="closeModalOutside(event, 'modal-editar-paciente')">
   <div class="modal">
     <div class="modal-header">
@@ -457,7 +450,7 @@
         <label class="form-label">Cama</label>
         <input type="text" class="form-input" placeholder="Ej: A" id="editar-paciente-cama">
       </div>
-    </div>    
+    </div>   
     <div class="form-group">
       <label class="form-label">Alergias</label>
       <input type="text" class="form-input" placeholder="Separar con comas" id="editar-paciente-alergias">
@@ -467,26 +460,13 @@
       <textarea class="form-textarea" id="editar-paciente-notas"> </textarea>
     </div>
     <div class="modal-footer">
-
-      <button class="btn-cancel"
-      onclick="closeModal('modal-editar-paciente')">
-
-          Cancelar
-
-      </button>
-
-      <button class="btn-save"
-      onclick="guardarEdicionPaciente()">
-
-          Guardar
-
-      </button>
-
+      <button class="btn-cancel" onclick="closeModal('modal-editar-paciente')">Cancelar</button>
+      <button class="btn-save" onclick="guardarEdicionPaciente()">Guardar</button>
     </div>
   </div>
 </div>
 
-<!--  MODAL: DETALLES PACIENTE  -->
+<!-- MODAL: DETALLES PACIENTE -->
 <div class="modal-overlay" id="modal-detalles-paciente" onclick="closeModalOutside(event,'modal-detalles-paciente')">
   <div class="modal modal-detalle-wide">
 
@@ -557,7 +537,7 @@
   </div>
 </div>
 
-<!--  MODAL: NUEVA VISITA -->
+<!-- MODAL: NUEVA VISITA -->
 <div class="modal-overlay" id="modal-nueva-visita" onclick="closeModalOutside(event, 'modal-nueva-visita')">
   <div class="modal">
     <div class="modal-header">
@@ -565,55 +545,47 @@
       <button class="modal-close" onclick="closeModal('modal-nueva-visita')"><i class="ti ti-x"></i></button>
     </div>
     <h3 class="form-page-title">
-    <i class="ti ti-bed"></i>
-    Datos del paciente
+      <i class="ti ti-bed"></i> Datos del paciente
     </h3>
 
     <div class="form-group">
-        <label class="form-label">
-            Paciente <span class="req">*</span>
-        </label>
-
-        <select class="form-select" id="visita-paciente">
-
-            <option value="">
-                Seleccionar paciente
-            </option>
-
-        </select>
-
+      <label class="form-label">Paciente <span class="req">*</span></label>
+      <select class="form-select" id="visita-paciente">
+        <option value="">Seleccionar paciente</option>
+      </select>
     </div>
-<h3 class="form-page-title">
-    <i class="ti ti-user"></i>
-    Datos del visitante
-</h3>
 
-<div class="form-row">
-    <div class="form-group">
+    <h3 class="form-page-title">
+      <i class="ti ti-user"></i> Datos del visitante
+    </h3>
+
+    <div class="form-row">
+      <div class="form-group">
         <label class="form-label">Nombre <span class="req">*</span></label>
         <input type="text" class="form-input" id="visitante-nombre">
         <div class="field-required-hint" id="hint-visitante-nombre">Este campo es obligatorio.</div>
-    </div>
+      </div>
 
-    <div class="form-group">
+      <div class="form-group">
         <label class="form-label">Apellido <span class="req">*</span></label>
         <input type="text" class="form-input" id="visitante-apellido">
         <div class="field-required-hint" id="hint-visitante-apellido">Este campo es obligatorio.</div>
+      </div>
     </div>
-</div>
 
-<div class="form-row">
-    <div class="form-group">
+    <div class="form-row">
+      <div class="form-group">
         <label class="form-label">Teléfono</label>
         <input type="text" class="form-input" id="visitante-telefono">
-    </div>
+      </div>
 
-    <div class="form-group">
+      <div class="form-group">
         <label class="form-label">Domicilio <span class="req">*</span></label>
         <input type="text" class="form-input" id="visitante-domicilio">
         <div class="field-required-hint" id="hint-visitante-domicilio">Este campo es obligatorio.</div>
+      </div>
     </div>
-</div>
+
     <div class="form-row">
       <div>
         <label class="form-label">DNI <span class="req">*</span></label>
@@ -622,19 +594,40 @@
       </div>
       <div>
         <label class="form-label">Parentesco <span class="req">*</span></label>
-        <select class="form-select" id="visita-parentesco" required><option value="" selected disabled>Seleccione un Parentesco</option>
+        <select class="form-select" id="visita-parentesco" required>
+          <option value="" selected disabled>Seleccione un Parentesco</option>
           <option value="Padre">Padre</option>
-            <option value="Madre">Madre</option>
-            <option value="Hermano">Hermano</option>
-            <option value="Hermana">Hermana</option>
-            <option value="Esposo/a">Esposo/a</option>
-            <option value="Hijo/a">Hijo/a</option>
-            <option value="Otro">Otro</option>
-
+          <option value="Madre">Madre</option>
+          <option value="Hermano">Hermano</option>
+          <option value="Hermana">Hermana</option>
+          <option value="Esposo/a">Esposo/a</option>
+          <option value="Hijo/a">Hijo/a</option>
+          <option value="Otro">Otro</option>
         </select>
         <div class="field-required-hint" id="hint-visita-parentesco">Este campo es obligatorio.</div>
       </div>
     </div>
+
+    <!-- ── COMPONENTE DE CÁMARA INTEGRADO EN EL FORMULARIO ── -->
+    <div class="form-group">
+      <label class="form-label">Foto de Identificación / Visita</label>
+      <div class="camara-container">
+        <div id="camara-preview" class="camara-preview">
+          <i class="ti ti-camera"></i>
+          <span>Sin foto capturada</span>
+        </div>
+        <div class="camara-acciones">
+          <button type="button" class="btn-camara" onclick="abrirCamara()">
+            <i class="ti ti-camera"></i> Tomar foto
+          </button>
+          <button type="button" id="btn-retomar-foto" class="btn-camara danger" style="display:none;" onclick="limpiarFoto()">
+            <i class="ti ti-trash"></i> Eliminar
+          </button>
+        </div>
+      </div>
+      <input type="hidden" id="foto-visita-input" name="foto_visita">
+    </div>
+
     <div class="form-row">
       <div>
         <label class="form-label">Fecha</label>
@@ -645,46 +638,41 @@
         <input type="time" class="form-input" id="visita-ingreso">
       </div>
     </div>
+
     <div class="form-group">
       <label class="form-label">Hora de salida</label>
       <input type="time" class="form-input" id="visita-salida">
     </div>
+
     <div class="form-group">
-      <label class="form-label">limite de tiempo (minutos)</label>
+      <label class="form-label">Límite de tiempo (minutos)</label>
       <input type="number" class="form-input" id="visita-limite" min="1" max="180" value="30">
     </div>
+
     <div class="form-group">
       <label class="form-label">Tipo de visita</label>
       <select class="form-select" id="visita-tipo">
-
-          <option value="Temporal">
-              Temporal
-          </option>
-
-          <option value="Permanente">
-              Permanente
-          </option>
-
+        <option value="Temporal">Temporal</option>
+        <option value="Permanente">Permanente</option>
       </select>
     </div>
+
     <div class="form-group">
       <label class="form-label">Observaciones</label>
-      <textarea class="form-textarea"
-        placeholder="Observaciones de la visita..."
-        id="visita-observaciones">
-      </textarea>
+      <textarea class="form-textarea" placeholder="Observaciones de la visita..." id="visita-observaciones"></textarea>
     </div>
+
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal('modal-nueva-visita')">Cancelar</button>
       <button class="btn-save" onclick="guardarVisitaConControlTiempo()">Guardar</button>
     </div>
     <p style="font-size:12px;color:#6b7280;margin-top:6px;">
-    Máximo permitido: 2 visitantes por paciente.
+      Máximo permitido: 2 visitantes por paciente.
     </p>
   </div>
 </div>
 
-<!--  MODAL: EDITAR VISITA (seguir editando) -->
+<!-- MODAL: EDITAR VISITA -->
 <div class="modal-overlay" id="modal-editar-visita" onclick="closeModalOutside(event, 'modal-editar-visita')">
   <div class="modal">
     <div class="modal-header">
@@ -692,55 +680,47 @@
       <button class="modal-close" onclick="closeModal('modal-editar-visita')"><i class="ti ti-x"></i></button>
     </div>
     <h3 class="form-page-title">
-    <i class="ti ti-bed"></i>
-    Datos del paciente
+      <i class="ti ti-bed"></i> Datos del paciente
     </h3>
 
     <div class="form-group">
-        <label class="form-label">
-            Paciente <span class="req">*</span>
-        </label>
-
-        <select class="form-select" id="editar-visita-paciente">
-
-            <option value="">
-                Seleccionar paciente
-            </option>
-
-        </select>
-
+      <label class="form-label">Paciente <span class="req">*</span></label>
+      <select class="form-select" id="editar-visita-paciente">
+        <option value="">Seleccionar paciente</option>
+      </select>
     </div>
-<h3 class="form-page-title">
-    <i class="ti ti-user"></i>
-    Datos del visitante
-</h3>
 
-<div class="form-row">
-    <div class="form-group">
+    <h3 class="form-page-title">
+      <i class="ti ti-user"></i> Datos del visitante
+    </h3>
+
+    <div class="form-row">
+      <div class="form-group">
         <label class="form-label">Nombre <span class="req">*</span></label>
         <input type="text" class="form-input" id="editar-visita-nombre">
         <div class="field-required-hint" id="hint-editar-visita-nombre">Este campo es obligatorio.</div>
-    </div>
+      </div>
 
-    <div class="form-group">
+      <div class="form-group">
         <label class="form-label">Apellido <span class="req">*</span></label>
         <input type="text" class="form-input" id="editar-visita-apellido">
         <div class="field-required-hint" id="hint-editar-visita-apellido">Este campo es obligatorio.</div>
+      </div>
     </div>
-</div>
 
-<div class="form-row">
-    <div class="form-group">
+    <div class="form-row">
+      <div class="form-group">
         <label class="form-label">Teléfono</label>
         <input type="text" class="form-input" id="editar-visita-telefono">
-    </div>
+      </div>
 
-    <div class="form-group">
+      <div class="form-group">
         <label class="form-label">Domicilio <span class="req">*</span></label>
         <input type="text" class="form-input" id="editar-visita-domicilio">
         <div class="field-required-hint" id="hint-editar-visita-domicilio">Este campo es obligatorio.</div>
+      </div>
     </div>
-</div>
+
     <div class="form-row">
       <div>
         <label class="form-label">DNI <span class="req">*</span></label>
@@ -751,16 +731,16 @@
         <label class="form-label">Parentesco</label>
         <select class="form-select" id="editar-visita-parentesco">
           <option>Padre</option>
-            <option>Madre</option>
-            <option>Hermano</option>
-            <option>Hermana</option>
-            <option>Esposo/a</option>
-            <option>Hijo/a</option>
-            <option>Otro</option>
-
+          <option>Madre</option>
+          <option>Hermano</option>
+          <option>Hermana</option>
+          <option>Esposo/a</option>
+          <option>Hijo/a</option>
+          <option>Otro</option>
         </select>
       </div>
     </div>
+
     <div class="form-row">
       <div>
         <label class="form-label">Fecha</label>
@@ -771,37 +751,31 @@
         <input type="time" class="form-input" id="editar-visita-ingreso">
       </div>
     </div>
+
     <div class="form-group">
       <label class="form-label">Hora de salida</label>
       <input type="time" class="form-input" id="editar-visita-salida">
     </div>
+
     <div class="form-group">
       <label class="form-label">Tipo de visita</label>
       <select class="form-select" id="editar-visita-tipo">
-
-          <option value="Temporal">
-              Temporal
-          </option>
-
-          <option value="Permanente">
-              Permanente
-          </option>
-
+        <option value="Temporal">Temporal</option>
+        <option value="Permanente">Permanente</option>
       </select>
     </div>
+
     <div class="form-group">
       <label class="form-label">Observaciones</label>
-      <textarea class="form-textarea"
-        placeholder="Observaciones de la visita..."
-        id="editar-visita-observaciones">
-      </textarea>
+      <textarea class="form-textarea" placeholder="Observaciones de la visita..." id="editar-visita-observaciones"></textarea>
     </div>
+
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal('modal-editar-visita')">Cancelar</button>
-      <button class="btn-save" onclick="guardarEdicionVisita()"> Guardar </button>
+      <button class="btn-save" onclick="guardarEdicionVisita()">Guardar</button>
     </div>
     <p style="font-size:12px;color:#6b7280;margin-top:6px;">
-    Máximo permitido: 2 visitantes por paciente.
+      Máximo permitido: 2 visitantes por paciente.
     </p>
   </div>
 </div>
@@ -815,8 +789,11 @@
       <button class="modal-close" onclick="closeModal('modal-detalle-visita')"><i class="ti ti-x"></i></button>
     </div>
 
-    <!-- Cabecera visitante -->
     <div class="detalle-header">
+      <!--foto de del visitante-->
+      <div style="text-align: center; width: 100%; margin-bottom: 12px;">
+        <img id="dv-foto" src="" alt="Foto del visitante" style="max-width: 100%; max-height: 180px; border-radius: 8px; object-fit: cover; display: none; margin: 0 auto; border: 1px solid #e2e8f0;">
+      </div>
       <div class="detalle-avatar" id="dv-avatar"></div>
       <div class="detalle-header-info">
         <div class="detalle-nombre-big" id="dv-nombre-completo"></div>
@@ -827,7 +804,6 @@
       </div>
     </div>
 
-    <!-- Paciente -->
     <div class="detalle-section-title"><i class="ti ti-bed"></i> Paciente</div>
     <div class="detalle-grid">
       <div class="detalle-field detalle-field-full">
@@ -836,7 +812,6 @@
       </div>
     </div>
 
-    <!-- Datos del visitante -->
     <div class="detalle-section-title"><i class="ti ti-user"></i> Datos del visitante</div>
     <div class="detalle-grid">
       <div class="detalle-field">
@@ -853,7 +828,6 @@
       </div>
     </div>
 
-    <!-- Datos de la visita -->
     <div class="detalle-section-title"><i class="ti ti-calendar-event"></i> Datos de la visita</div>
     <div class="detalle-grid">
       <div class="detalle-field">
@@ -885,8 +859,29 @@
   </div>
 </div>
 
-<!-- Scripts -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<!-- ── MODAL CAPTURA DE CÁMARA (WEBCAM EMITTER) ── -->
+<div id="modal-camara" class="modal-overlay">
+  <div class="modal modal-camara-box">
+    <div class="modal-header">
+      <span class="modal-title"><i class="ti ti-camera"></i> Capturar Foto</span>
+      <button type="button" class="modal-close" onclick="cerrarCamara()"><i class="ti ti-x"></i></button>
+    </div>
+   
+    <div class="camara-video-wrap">
+      <video id="video-stream" autoplay playsinline></video>
+      <canvas id="canvas-foto" style="display: none;"></canvas>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" onclick="cerrarCamara()">Cancelar</button>
+      <button type="button" class="btn-save" onclick="capturarFoto()">
+        <i class="ti ti-aperture"></i> Capturar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- AVISO FLOTANTE TIEMPO AGOTADO -->
 <div id="aviso-tiempo-visita" class="aviso-flotante">
   <i class="ti ti-clock-exclamation"></i>
   <span>se le acabo el tiempo de visita </span>
@@ -894,6 +889,9 @@
     <i class="ti ti-x"></i>
   </button>
 </div>
+
+<!-- SCRIPTS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

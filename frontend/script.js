@@ -14,6 +14,9 @@ let indicePacienteEditando = null;
 
 let indiceVisitaEditando = null;
 
+// Variable global para almacenar el Stream activo de la cámara
+let streamCamara = null;
+
 // ── CARGA DE DATOS ──
 
 // URL base de la API
@@ -35,7 +38,6 @@ async function cargarDatos() {
     visitas   = [];
   }
 }
-
 
 // ── NAVEGACIÓN ENTRE SECCIONES ──
 function showSection(name) {
@@ -113,8 +115,6 @@ function renderGrafico(){
 
   const canvas = document.getElementById('deptChart');
 
-
-
   if (!canvas) return;
 
   const habitaciones = [...new Set(
@@ -143,7 +143,7 @@ function renderGrafico(){
 
   if(graficoHabitaciones){
     graficoHabitaciones.destroy();
-}
+  }
 
   graficoHabitaciones = new Chart(canvas,{
 
@@ -274,7 +274,8 @@ function cargarPacientesEnSelect(){
     const selectEditar = document.getElementById("editar-visita-paciente");
     if(selectEditar) selectEditar.innerHTML = optionsHtml;
 
-  }
+}
+
 function renderPacientes(){
 
     const tbody = document.getElementById("tbody-pacientes");
@@ -291,7 +292,7 @@ function renderPacientes(){
             <td>
                 <div class="td-patient">
                     <div class="avatar av-blue">
-                        ${paciente.nombre[0]}
+                        ${paciente.nombre ? paciente.nombre[0] : ''}
                     </div>
 
                     <span>
@@ -683,23 +684,25 @@ async function guardarVisita() {
     horaSalida:        document.getElementById("visita-salida").value,
     tipo:              document.getElementById("visita-tipo").value,
     observaciones:     document.getElementById("visita-observaciones").value,
+    foto:              document.getElementById("foto-visita-input") ? document.getElementById("foto-visita-input").value : ''
   };
+
   // === VALIDACIÓN DEL PARENTESCO (OBLIGATORIO) ===
-    const hintParentesco = document.getElementById('hint-visita-parentesco');
-   
-    // Si no seleccionó nada (la opción por defecto tiene value=""), frenamos el envío
-    if (!datos.parentesco || datos.parentesco.trim() === "") {
-        if (hintParentesco) {
-            hintParentesco.style.display = 'block'; // Muestra el cartel de "Este campo es obligatorio" en rojo
-        }
-        alert("Por favor, seleccione el parentesco antes de continuar.");
-        return; // 🔥 Freno de mano: Evita que el código siga hacia el fetch
-    } else {
-        if (hintParentesco) {
-            hintParentesco.style.display = 'none'; // Oculta el cartel si ya eligió una opción válida
-        }
-    }
-    // ===============================================
+  const hintParentesco = document.getElementById('hint-visita-parentesco');
+
+  // Si no seleccionó nada (la opción por defecto tiene value=""), frenamos el envío
+  if (!datos.parentesco || datos.parentesco.trim() === "") {
+      if (hintParentesco) {
+          hintParentesco.style.display = 'block'; // Muestra el cartel de "Este campo es obligatorio" en rojo
+      }
+      alert("Por favor, seleccione el parentesco antes de continuar.");
+      return; // 🔥 Freno de mano: Evita que el código siga hacia el fetch
+  } else {
+      if (hintParentesco) {
+          hintParentesco.style.display = 'none'; // Oculta el cartel si ya eligió una opción válida
+      }
+  }
+  // ===============================================
 
   try {
     const res = await fetch(`${API_URL}/visitas`, {
@@ -709,13 +712,12 @@ async function guardarVisita() {
     });
     if (!res.ok) { const e = await res.json(); alert('Error: ' + e.error); return; }
     closeModal("modal-nueva-visita");
+    limpiarFoto(); // Limpiar el contenedor de foto al terminar
     await recargarTodo();
     if (datos.tipo === "Permanente") {
       alert("La visita permanente fue registrada correctamente.")
     } else if (datos.tipo === "Temporal") {
       alert("La visita temporal fue registrada correctamente.");
-    }{
-      
     }
   } catch (e) {
     alert('No se pudo conectar al servidor.');
@@ -781,7 +783,6 @@ async function eliminarVisita(indice) {
     alert('No se pudo conectar al servidor.');
   }
 }
-
 
 // ══════════════════════════════════════════
 //  AUTENTICACIÓN — Administrador único
@@ -1033,9 +1034,18 @@ function verDetallesVisita(indice) {
     document.getElementById("dv-salida").textContent       = v.horaSalida   || "—";
     document.getElementById("dv-observaciones").textContent = v.observaciones || "Sin observaciones";
 
+    const imgFoto = document.getElementById("dv-foto");
+    if (imgFoto) {
+        if (v.foto) {
+            imgFoto.src = v.foto;
+            imgFoto.style.display = "block";
+        } else {
+            imgFoto.style.display = "none";
+        }
+    }
     openModal("modal-detalle-visita");
 }
-//  CONTROL DE TIEMPO DE VISITA
+// ── CONTROL DE TIEMPO DE VISITA ──
 
 document.addEventListener('DOMContentLoaded', () => {
   if ('Notification' in window && Notification.permission === 'default') {
@@ -1049,8 +1059,9 @@ function abrirModalNuevaVisita() {
   }
   openModal('modal-nueva-visita');
   cargarHorarioActual();
-  const limiteInput =document.getElementById('visita-limite');
+  const limiteInput = document.getElementById('visita-limite');
   if (limiteInput) limiteInput.value = 30;
+  limpiarFoto();
 }
 
 function cargarHorarioActual() {
@@ -1112,10 +1123,84 @@ function mostrarAvisoFinVisita() {
     const notif = new Notification(titulo, {body: mensaje, requireInteraction: true});
     notif.onclick = () => window.focus();
   }
+}
+
 window.cerrarAvisoTiempo = function() {
-    const aviso = document.getElementById('aviso-tiempo-visita');
-    if (aviso) {
-      aviso.classList.remove('visible');
-    }
+  const aviso = document.getElementById('aviso-tiempo-visita');
+  if (aviso) {
+    aviso.classList.remove('visible');
   }
 };
+
+// ══════════════════════════════════════════
+//  GABINETE Y CAPTURA DE CÁMARA (WEBCAM)
+// ══════════════════════════════════════════
+
+async function abrirCamara() {
+  const modal = document.getElementById('modal-camara');
+  const video = document.getElementById('video-stream');
+ 
+  if (!modal || !video) return;
+
+  try {
+    streamCamara = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+      audio: false
+    });
+    video.srcObject = streamCamara;
+    modal.classList.add('open');
+  } catch (err) {
+    alert('No se pudo acceder a la cámara. Asegúrese de otorgar los permisos correspondientes.');
+    console.error('Error de acceso a la cámara:', err);
+  }
+}
+
+function capturarFoto() {
+  const video = document.getElementById('video-stream');
+  const canvas = document.getElementById('canvas-foto');
+  const preview = document.getElementById('camara-preview');
+  const fotoInput = document.getElementById('foto-visita-input');
+  const btnRetomar = document.getElementById('btn-retomar-foto');
+
+  if (!video || !canvas) return;
+
+  canvas.width = video.videoWidth || 640;
+  canvas.height = video.videoHeight || 480;
+
+  const context = canvas.getContext('2d');
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  const dataURL = canvas.toDataURL('image/jpeg', 0.85);
+
+  if (fotoInput) fotoInput.value = dataURL;
+  if (preview) {
+    preview.innerHTML = `<img src="${dataURL}" alt="Foto captura" style="max-width:100%; height:auto; border-radius:6px;">`;
+  }
+  if (btnRetomar) btnRetomar.style.display = 'inline-flex';
+
+  cerrarCamara();
+}
+
+function cerrarCamara() {
+  const modal = document.getElementById('modal-camara');
+  if (streamCamara) {
+    streamCamara.getTracks().forEach(track => track.stop());
+    streamCamara = null;
+  }
+  if (modal) modal.classList.remove('open');
+}
+
+function limpiarFoto() {
+  const preview = document.getElementById('camara-preview');
+  const fotoInput = document.getElementById('foto-visita-input');
+  const btnRetomar = document.getElementById('btn-retomar-foto');
+
+  if (fotoInput) fotoInput.value = '';
+  if (preview) {
+    preview.innerHTML = `
+      <i class="ti ti-camera"></i>
+      <span>Sin foto capturada</span>
+    `;
+  }
+  if (btnRetomar) btnRetomar.style.display = 'none';
+}
