@@ -1,7 +1,4 @@
-// ══════════════════════════════════════════
 //  MediVisit — script.js
-// ══════════════════════════════════════════
-
 // ── DATOS ──
 
 let pacientes = [];
@@ -1139,12 +1136,17 @@ window.cerrarAvisoTiempo = function() {
 async function abrirCamara() {
   const modal = document.getElementById('modal-camara');
   const video = document.getElementById('video-stream');
- 
+
   if (!modal || !video) return;
 
   try {
+    // Se configura facingMode: { ideal: 'environment' } para priorizar la cámara trasera en móviles
     streamCamara = await navigator.mediaDevices.getUserMedia({
-      video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+      video: {
+        width: { ideal: 640 },
+        height: { ideal: 480 },
+        facingMode: { ideal: 'environment' }
+      },
       audio: false
     });
     video.srcObject = streamCamara;
