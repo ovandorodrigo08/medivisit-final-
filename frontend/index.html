@@ -609,19 +609,20 @@
     </div>
 
     <!-- ── COMPONENTE DE CÁMARA INTEGRADO EN EL FORMULARIO ── -->
-    <div class="form-group">
-      <label class="form-label">Foto de Identificación / Visita</label>
-      <div class="camara-container">
-        <div id="camara-preview" class="camara-preview">
+    <div class="form-group" style="grid-column: span 2;">
+      <label >Foto de Indetificacion / Visita</label>
+        <div id="camara-preview" class="camara-preview-box">
           <i class="ti ti-camera"></i>
           <span>Sin foto capturada</span>
         </div>
-        <div class="camara-acciones">
-          <button type="button" class="btn-camara" onclick="abrirCamara()">
-            <i class="ti ti-camera"></i> Tomar foto
-          </button>
-          <button type="button" id="btn-retomar-foto" class="btn-camara danger" style="display:none;" onclick="limpiarFoto()">
-            <i class="ti ti-trash"></i> Eliminar
+        <input type="hidden" id="foto-visita-input" name="foto">
+        
+        <div style="display: flex; gap: 8px; margin-top: 8px;">
+        <button type="button" class="btn btn-secondary" onclick="abrircamara()">
+        <i class="ti ti-camera"></i> tomar foto
+        </button>
+        <button type="button" class="btn btn-danger" id="btn-retomar-foto" onclick="limpiarfoto()" style="display:none ;"></button>
+        </div>
           </button>
         </div>
       </div>
@@ -790,10 +791,6 @@
     </div>
 
     <div class="detalle-header">
-      <!--foto de del visitante-->
-      <div style="text-align: center; width: 100%; margin-bottom: 12px;">
-        <img id="dv-foto" src="" alt="Foto del visitante" style="max-width: 100%; max-height: 180px; border-radius: 8px; object-fit: cover; display: none; margin: 0 auto; border: 1px solid #e2e8f0;">
-      </div>
       <div class="detalle-avatar" id="dv-avatar"></div>
       <div class="detalle-header-info">
         <div class="detalle-nombre-big" id="dv-nombre-completo"></div>
@@ -803,6 +800,10 @@
         </div>
       </div>
     </div>
+    <!--foto de del visitante-->
+      <div style="text-align: center; width: 100%; margin-bottom: 12px;">
+        <img id="dv-foto" src="" alt="Foto del visitante" style="max-width: 100%; max-height: 180px; border-radius: 8px; object-fit: cover; display: none; margin: 0 auto; border: 1px solid #e2e8f0;">
+      </div>
 
     <div class="detalle-section-title"><i class="ti ti-bed"></i> Paciente</div>
     <div class="detalle-grid">
