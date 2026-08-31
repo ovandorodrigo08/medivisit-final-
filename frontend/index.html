@@ -450,7 +450,7 @@
         <label class="form-label">Cama</label>
         <input type="text" class="form-input" placeholder="Ej: A" id="editar-paciente-cama">
       </div>
-    </div>   
+    </div>  
     <div class="form-group">
       <label class="form-label">Alergias</label>
       <input type="text" class="form-input" placeholder="Separar con comas" id="editar-paciente-alergias">
@@ -610,20 +610,20 @@
 
     <!-- ── COMPONENTE DE CÁMARA INTEGRADO EN EL FORMULARIO ── -->
     <div class="form-group" style="grid-column: span 2;">
-      <label  class="form-label">Foto de Identificacion / Visita</label>
+      <label class="form-label">Foto de Identificacion / Visita</label>
         <div id="camara-preview" class="camara-preview-box">
           <i class="ti ti-camera"></i>
           <span>Sin foto capturada</span>
         </div>
         <input type="hidden" id="foto-visita-input" name="foto">
-        
+       
         <div style="display: flex; gap: 8px; margin-top: 8px;">
-        <button type="button" class= "btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="abrircamara()">
-        <i class="ti ti-camera"></i> Tomar foto
+        <button type="button" class="btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="abrirCamara()">
+          <i class="ti ti-camera"></i> Tomar foto
         </button>
-        <button type="button" class="btn-cancel" id="btn-retomar-foto" onclick="limpiarfoto()" style="display:none ; padding: 6px 12px; font-size: 13px; color: #ef4444; border-color: #fca5a5;">
-        <i class="ti ti-trash"></i> Quitar Foto
-      </button>
+        <button type="button" class="btn-cancel" id="btn-retomar-foto" onclick="limpiarFoto()" style="display:none; padding: 6px 12px; font-size: 13px; color: #ef4444; border-color: #fca5a5;">
+          <i class="ti ti-trash"></i> Quitar Foto
+        </button>
      </div>
     </div>
 
@@ -798,10 +798,10 @@
         </div>
       </div>
     </div>
-    <!--foto de del visitante-->
-      <div style="text-align: center; width: 100%; margin-bottom: 12px;">
-        <img id="dv-foto" src="" alt="Foto del visitante" style="max-width: 100%; max-height: 180px; border-radius: 8px; object-fit: cover; display: none; margin: 0 auto; border: 1px solid #e2e8f0;">
-      </div>
+    <!--foto del visitante-->
+    <div style="text-align: center; width: 100%; margin-bottom: 12px;">
+      <img id="dv-foto" src="" alt="Foto del visitante" style="max-width: 100%; max-height: 180px; border-radius: 8px; object-fit: cover; display: none; margin: 0 auto; border: 1px solid #e2e8f0;">
+    </div>
 
     <div class="detalle-section-title"><i class="ti ti-bed"></i> Paciente</div>
     <div class="detalle-grid">
@@ -859,15 +859,15 @@
 </div>
 
 <!-- ── MODAL CAPTURA DE CÁMARA (WEBCAM EMITTER) ── -->
-<div id="modal-camara" class="modal-overlay">
+<div id="modal-camara" class="modal-overlay" onclick="closeModalOutside(event, 'modal-camara')">
   <div class="modal modal-camara-box">
     <div class="modal-header">
       <span class="modal-title"><i class="ti ti-camera"></i> Capturar Foto</span>
       <button type="button" class="modal-close" onclick="cerrarCamara()"><i class="ti ti-x"></i></button>
     </div>
-   
+  
     <div class="camara-video-wrap">
-      <video id="video-stream" autoplay playsinline></video>
+      <video id="video-stream" autoplay playsinline style="width:100%; height:auto; display:block; border-radius: 8px;"></video>
       <canvas id="canvas-foto" style="display: none;"></canvas>
     </div>
 
@@ -883,7 +883,7 @@
 <!-- AVISO FLOTANTE TIEMPO AGOTADO -->
 <div id="aviso-tiempo-visita" class="aviso-flotante">
   <i class="ti ti-clock-exclamation"></i>
-  <span>se le acabo el tiempo de visita </span>
+  <span>Se le acabó el tiempo de visita</span>
   <button type="button" onclick="cerrarAvisoTiempo()" aria-label="Cerrar">
     <i class="ti ti-x"></i>
   </button>
