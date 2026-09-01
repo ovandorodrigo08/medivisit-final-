@@ -33,7 +33,8 @@ const setupDatabase = async () => {
       hora_salida TIME,
       tipo VARCHAR(20) DEFAULT 'Temporal',
       observaciones TEXT,
-      created_at TIMESTAMP DEFAULT NOW()
+      foto TEXT,
+      created_at TIMESTAMP DEFAULT NOW
     );
   `;
   try {
