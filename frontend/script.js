@@ -1206,3 +1206,70 @@ function limpiarFoto() {
   }
   if (btnRetomar) btnRetomar.style.display = 'none';
 }
+// ══════════════════ INFORME SEMANAL ══════════════════
+let informeSemanaOffset = 0;
+
+function getLunesDeSemana(offset = 0) {
+  const hoy = new Date();
+  const dia = hoy.getDay();
+  const diffLunes = dia === 0 ? -6 : 1 - dia;
+  const lunes = new Date(hoy);
+  lunes.setDate(hoy.getDate() + diffLunes + offset * 7);
+  lunes.setHours(0, 0, 0, 0);
+  return lunes;
+}
+
+function formatFechaCorta(date) {
+  return date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+async function cargarInformeSemanal() {
+  const lunes = getLunesDeSemana(informeSemanaOffset);
+  const inicioStr = lunes.toISOString().split('T')[0];
+
+  document.getElementById('informe-rango-semana').textContent = 'Cargando...';
+
+  try {
+    const res = await fetch(`${API_URL}/visitas/informe-semanal?inicio=${inicioStr}`);
+    const data = await res.json();
+
+    document.getElementById('informe-rango-semana').textContent =
+      `${formatFechaCorta(new Date(data.fechaInicio + 'T00:00:00'))} - ${formatFechaCorta(new Date(data.fechaFin + 'T00:00:00'))}`;
+    document.getElementById('informe-total-visitas').textContent = data.totalVisitas;
+    document.getElementById('informe-total-pacientes').textContent = data.pacientesUnicos;
+
+    const tbody = document.getElementById('tbody-informe-semanal');
+    tbody.innerHTML = '';
+
+    if (data.visitas.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#6b7280;">Sin visitas registradas esta semana</td></tr>';
+      return;
+    }
+
+    data.visitas.forEach(v => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${v.paciente}</td>
+        <td>${v.nombreVisitante} ${v.apellidoVisitante}</td>
+        <td>${formatFechaCorta(new Date(v.fecha + 'T00:00:00'))}</td>
+        <td>${v.horaIngreso || '-'}</td>
+        <td>${v.tipo}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (err) {
+    console.error('Error al cargar informe semanal:', err);
+    document.getElementById('informe-rango-semana').textContent = 'Error al cargar';
+  }
+}
+
+function cambiarSemana(direccion) {
+  informeSemanaOffset += direccion;
+  cargarInformeSemanal();
+}
+
+function descargarInformePDF() {
+  const lunes = getLunesDeSemana(informeSemanaOffset);
+  const inicioStr = lunes.toISOString().split('T')[0];
+  window.open(`${API_URL}/visitas/informe-semanal/pdf?inicio=${inicioStr}`, '_blank');
+}

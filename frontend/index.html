@@ -106,6 +106,10 @@
         <i class="ti ti-clipboard-heart"></i>
         <span>Control de Visitas</span>
     </div>
+    <div class="nav-item" id="nav-informe" onclick="showSection('informe'); if(typeof cargarInformeSemanal==='function') cargarInformeSemanal();">
+      <i class="ti ti-report"></i>
+      <span>Informe Semanal</span>
+    </div>
   </nav>
 
   <div class="sidebar-bottom">
@@ -245,6 +249,7 @@
     </div>
   </section>
 
+
   <!-- SECCIÓN: VISITAS -->
   <section class="section" id="section-visitas">
     <div class="page-header">
@@ -287,7 +292,55 @@
       </table>
     </div>
   </section>
+  <section class="section" id="section-informe">
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-title">Informe Semanal</div>
+      <div class="page-sub">Visitas registradas por semana</div>
+    </div>
+    <button class="btn-primary" onclick="descargarInformePDF()">
+      <i class="ti ti-download"></i> Descargar PDF
+    </button>
+  </div>
 
+  <div class="filter-tabs" style="align-items:center; gap:12px;">
+    <button class="tab-btn" onclick="cambiarSemana(-1)"><i class="ti ti-chevron-left"></i></button>
+    <span id="informe-rango-semana" style="font-weight:600;"></span>
+    <button class="tab-btn" onclick="cambiarSemana(1)"><i class="ti ti-chevron-right"></i></button>
+  </div>
+
+  <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-top:16px;">
+    <div class="stat-card">
+      <div>
+        <div class="stat-label">Visitas esta semana</div>
+        <div class="stat-value" id="informe-total-visitas">0</div>
+      </div>
+      <div class="stat-icon icon-blue"><i class="ti ti-calendar-event"></i></div>
+    </div>
+    <div class="stat-card">
+      <div>
+        <div class="stat-label">Pacientes distintos</div>
+        <div class="stat-value" id="informe-total-pacientes">0</div>
+      </div>
+      <div class="stat-icon icon-blue"><i class="ti ti-users"></i></div>
+    </div>
+  </div>
+
+  <div class="table-card" style="margin-top:16px;">
+    <table>
+      <thead>
+        <tr>
+          <th>Paciente</th>
+          <th>Visitante</th>
+          <th>Fecha</th>
+          <th>Ingreso</th>
+          <th>Tipo</th>
+        </tr>
+      </thead>
+      <tbody id="tbody-informe-semanal"></tbody>
+    </table>
+  </div>
+</section>
 </main>
 
 <!-- MODAL: NUEVO PACIENTE -->
