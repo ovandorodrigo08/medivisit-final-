@@ -16,7 +16,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type'],
 }));
-app.use(express.json());
+app.use(express.json({limit: '10mb'}));
 
 // ── Rutas ─────────────────────────────────────
 app.get('/', (req, res) => {
