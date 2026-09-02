@@ -814,7 +814,7 @@ input, select, textarea {
         margin-bottom: 15px !important;
         padding: 12px !important;
     }
-    .table-container, [class*="table-wrapper"], [class*="table"], .section-content {
+    .table-container, [class*="table-wrapper"], .table-card, .section-content {
         display: block !important;
         width: 100% !important;
         max-width: 100% !important;
