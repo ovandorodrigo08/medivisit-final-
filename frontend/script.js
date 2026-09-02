@@ -67,7 +67,30 @@ function closeModalOutside(event, id) {
 function toggleMenu(btn) {
   closeAllMenus();
   const menu = btn.nextElementSibling;
-  menu.classList.toggle('open');
+  const abrir = !menu.classList.contains('open');
+
+  if (abrir) {
+    const rect = btn.getBoundingClientRect();
+    const alturaMenu = 130;
+    const espacioAbajo = window.innerHeight - rect.bottom;
+    const abrirHaciaArriba = espacioAbajo < alturaMenu;
+
+    menu.style.setProperty('position', 'fixed', 'important');
+    menu.style.setProperty('left', 'auto', 'important');
+    menu.style.setProperty('right', (window.innerWidth - rect.right) + 'px', 'important');
+
+    if (abrirHaciaArriba) {
+      menu.style.setProperty('bottom', (window.innerHeight - rect.top + 4) + 'px', 'important');
+      menu.style.setProperty('top', 'auto', 'important');
+    } else {
+      menu.style.setProperty('top', (rect.bottom + 4) + 'px', 'important');
+      menu.style.setProperty('bottom', 'auto', 'important');
+    }
+
+    menu.style.setProperty('z-index', '999999', 'important');
+  }
+
+  menu.classList.toggle('open', abrir);
   event.stopPropagation();
 }
 
