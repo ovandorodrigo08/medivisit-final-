@@ -4,6 +4,7 @@ const router = express.Router();
 const pool = require('../db/pool');
 const PDFDocument = require('pdfkit');
 const path = require('path');
+const cloudinary = require('../config/cloudinary');
 
 // Helper: mapea fila DB → objeto frontend
 function mapVisita(v) {
@@ -236,6 +237,19 @@ router.post('/', async (req, res) => {
       }
     }
 
+    // ── Subir la foto a Cloudinary (si vino una) ──
+    let fotoUrl = null;
+    if (foto) {
+      try {
+        const resultadoUpload = await cloudinary.uploader.upload(foto, {
+          folder: 'medivisit',
+        });
+        fotoUrl = resultadoUpload.secure_url;
+      } catch (errCloud) {
+        console.error('Error al subir foto a Cloudinary:', errCloud.message);
+      }
+    }
+
     const result = await pool.query(
       `INSERT INTO visitas
         (paciente_nombre, nombre_visitante, apellido_visitante, dni, telefono,
@@ -245,7 +259,7 @@ router.post('/', async (req, res) => {
       [paciente, nombreVisitante, apellidoVisitante, dni, telefono || null,
         domicilio, parentesco || null, fecha || null,
         horaIngreso || null, horaSalida || null,
-        tipo || 'Temporal', observaciones || null, foto || null]
+        tipo || 'Temporal', observaciones || null, fotoUrl]
     );
     res.status(201).json(mapVisita(result.rows[0]));
   } catch (err) {
