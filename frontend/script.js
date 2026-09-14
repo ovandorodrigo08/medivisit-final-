@@ -888,6 +888,17 @@ async function authLogin() {
             return;
         }
 
+        // Sincronizar datos del usuario en cada login
+        try {
+          await fetch(`${API_URL}/usuarios/sync`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ firebaseUid: user.uid, nombre: user.displayName, email: user.email })
+          });
+        } catch (errSync) {
+          console.warn('No se pudo sincronizar el usuario con la base de datos:', errSync.message);
+        }
+
         document.getElementById('auth-screen').classList.add('hidden');
     } catch (err) {
         console.error('Error de login:', err.code, err.message);
@@ -923,6 +934,17 @@ async function authRegistrar() {
 
         await user.updateProfile({ displayName: nombre });
         await user.sendEmailVerification();
+
+        // Guardar el usuario en nuestra base de datos (Neon)
+        try {
+          await fetch(`${API_URL}/usuarios/sync`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ firebaseUid: user.uid, nombre, email })
+          });
+        } catch (errSync) {
+          console.warn('No se pudo sincronizar el usuario con la base de datos:', errSync.message);
+        }
 
         usuarioPendienteVerificacion = user;
         await auth.signOut();

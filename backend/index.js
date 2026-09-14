@@ -25,6 +25,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/pacientes', pacientesRouter);
 app.use('/api/visitas', visitasRouter);
+app.use('/api/usuarios',require('./routes/usuarios'));
 
 // ── Ruta no encontrada ────────────────────────
 app.use((req, res) => {
