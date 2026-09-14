@@ -710,16 +710,15 @@ async function guardarVisita() {
   // === VALIDACIÓN DEL PARENTESCO (OBLIGATORIO) ===
   const hintParentesco = document.getElementById('hint-visita-parentesco');
 
-  // Si no seleccionó nada (la opción por defecto tiene value=""), frenamos el envío
   if (!datos.parentesco || datos.parentesco.trim() === "") {
       if (hintParentesco) {
-          hintParentesco.style.display = 'block'; // Muestra el cartel de "Este campo es obligatorio" en rojo
+          hintParentesco.style.display = 'block';
       }
       alert("Por favor, seleccione el parentesco antes de continuar.");
-      return; // 🔥 Freno de mano: Evita que el código siga hacia el fetch
+      return;
   } else {
       if (hintParentesco) {
-          hintParentesco.style.display = 'none'; // Oculta el cartel si ya eligió una opción válida
+          hintParentesco.style.display = 'none';
       }
   }
   // ===============================================
@@ -732,7 +731,7 @@ async function guardarVisita() {
     });
     if (!res.ok) { const e = await res.json(); alert('Error: ' + e.error); return; }
     closeModal("modal-nueva-visita");
-    limpiarFoto(); // Limpiar el contenedor de foto al terminar
+    limpiarFoto();
     await recargarTodo();
     if (datos.tipo === "Permanente") {
       alert("La visita permanente fue registrada correctamente.")
@@ -805,24 +804,10 @@ async function eliminarVisita(indice) {
 }
 
 // ══════════════════════════════════════════
-//  AUTENTICACIÓN — Administrador único
+//  AUTENTICACIÓN — Firebase (email + contraseña)
 // ══════════════════════════════════════════
 
-const AUTH_KEY     = 'medivisit_admin';
-const AUTH_SESSION = 'medivisit_sesion';
-
-// Obtiene el admin guardado (objeto único, no lista)
-function authObtenerAdmin() {
-    try {
-        return JSON.parse(localStorage.getItem(AUTH_KEY)) || null;
-    } catch(e) {
-        return null;
-    }
-}
-
-function authGuardarAdmin(admin) {
-    localStorage.setItem(AUTH_KEY, JSON.stringify(admin));
-}
+let usuarioPendienteVerificacion = null;
 
 function authMostrarAlerta(msg, tipo) {
     const el = document.getElementById('auth-alert');
@@ -854,55 +839,76 @@ function authMarcarError(id, msg) {
     }
 }
 
-function authMostrarLogin() {
-    document.getElementById('auth-panel-login').style.display    = '';
-    document.getElementById('auth-panel-registro').style.display = 'none';
-    authOcultarAlerta();
-    authLimpiarErrores(['login-usuario','login-password']);
+function authOcultarTodosPaneles() {
+    document.getElementById('auth-panel-login').style.display     = 'none';
+    document.getElementById('auth-panel-registro').style.display  = 'none';
+    document.getElementById('auth-panel-verificar').style.display = 'none';
 }
 
-function authLogin() {
+function authMostrarLogin() {
+    authOcultarTodosPaneles();
+    document.getElementById('auth-panel-login').style.display = '';
     authOcultarAlerta();
-    authLimpiarErrores(['login-usuario','login-password']);
+    authLimpiarErrores(['login-email', 'login-password']);
+}
 
-    const usuario  = document.getElementById('login-usuario').value.trim();
+function authMostrarRegistro() {
+    authOcultarTodosPaneles();
+    document.getElementById('auth-panel-registro').style.display = '';
+    authOcultarAlerta();
+    authLimpiarErrores(['reg-nombre', 'reg-email', 'reg-password', 'reg-password2']);
+}
+
+function authMostrarPanelVerificar(email) {
+    authOcultarTodosPaneles();
+    document.getElementById('auth-panel-verificar').style.display = '';
+    document.getElementById('verificar-email-mostrado').textContent = email;
+}
+
+async function authLogin() {
+    authOcultarAlerta();
+    authLimpiarErrores(['login-email', 'login-password']);
+
+    const email    = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
 
     let ok = true;
-    if (!usuario)  { authMarcarError('login-usuario');  ok = false; }
+    if (!email)    { authMarcarError('login-email');    ok = false; }
     if (!password) { authMarcarError('login-password'); ok = false; }
     if (!ok) return;
 
-    const admin = authObtenerAdmin();
-    if (!admin || admin.usuario !== usuario || admin.password !== password) {
-        authMostrarAlerta('Usuario o contraseña incorrectos.', 'error');
-        return;
-    }
+    try {
+        const cred = await auth.signInWithEmailAndPassword(email, password);
+        const user = cred.user;
 
-    localStorage.setItem(AUTH_SESSION, JSON.stringify({ usuario: admin.usuario, nombre: admin.nombre }));
-    document.getElementById('auth-screen').classList.add('hidden');
+        if (!user.emailVerified) {
+            usuarioPendienteVerificacion = user;
+            await auth.signOut();
+            authMostrarPanelVerificar(email);
+            return;
+        }
+
+        document.getElementById('auth-screen').classList.add('hidden');
+    } catch (err) {
+        console.error('Error de login:', err.code, err.message);
+        authMostrarAlerta('Email o contraseña incorrectos.', 'error');
+    }
 }
 
-function authRegistrar() {
-    // Bloqueo duro — si ya existe admin no se puede crear otro
-    if (authObtenerAdmin()) {
-        authMostrarAlerta('Ya existe un administrador registrado. No se puede crear otro.', 'error');
-        return;
-    }
-
+async function authRegistrar() {
     authOcultarAlerta();
-    authLimpiarErrores(['reg-nombre','reg-usuario','reg-password','reg-password2']);
+    authLimpiarErrores(['reg-nombre', 'reg-email', 'reg-password', 'reg-password2']);
 
     const nombre    = document.getElementById('reg-nombre').value.trim();
-    const usuario   = document.getElementById('reg-usuario').value.trim();
+    const email     = document.getElementById('reg-email').value.trim();
     const password  = document.getElementById('reg-password').value;
     const password2 = document.getElementById('reg-password2').value;
 
     let ok = true;
-    if (!nombre)   { authMarcarError('reg-nombre');   ok = false; }
-    if (!usuario)  { authMarcarError('reg-usuario');  ok = false; }
-    if (password.length < 4) {
-        authMarcarError('reg-password', 'Mínimo 4 caracteres.');
+    if (!nombre) { authMarcarError('reg-nombre'); ok = false; }
+    if (!email)  { authMarcarError('reg-email');  ok = false; }
+    if (password.length < 6) {
+        authMarcarError('reg-password', 'Mínimo 6 caracteres.');
         ok = false;
     }
     if (password !== password2) {
@@ -911,45 +917,69 @@ function authRegistrar() {
     }
     if (!ok) return;
 
-    authGuardarAdmin({ nombre, usuario, password });
+    try {
+        const cred = await auth.createUserWithEmailAndPassword(email, password);
+        const user = cred.user;
 
-    authMostrarAlerta('¡Administrador creado! Iniciá sesión.', 'success');
-    document.getElementById('reg-nombre').value    = '';
-    document.getElementById('reg-usuario').value   = '';
-    document.getElementById('reg-password').value  = '';
-    document.getElementById('reg-password2').value = '';
+        await user.updateProfile({ displayName: nombre });
+        await user.sendEmailVerification();
 
-    // Ir al login después de crear
-    setTimeout(() => authMostrarLogin(), 1500);
+        usuarioPendienteVerificacion = user;
+        await auth.signOut();
+
+        document.getElementById('reg-nombre').value    = '';
+        document.getElementById('reg-email').value     = '';
+        document.getElementById('reg-password').value  = '';
+        document.getElementById('reg-password2').value = '';
+
+        authMostrarPanelVerificar(email);
+    } catch (err) {
+        console.error('Error de registro:', err.code, err.message);
+        if (err.code === 'auth/email-already-in-use') {
+            authMarcarError('reg-email');
+            authMostrarAlerta('Ese email ya está registrado.', 'error');
+        } else if (err.code === 'auth/invalid-email') {
+            authMarcarError('reg-email');
+            authMostrarAlerta('El email no es válido.', 'error');
+        } else if (err.code === 'auth/weak-password') {
+            authMarcarError('reg-password', 'La contraseña es muy débil.');
+        } else {
+            authMostrarAlerta('No se pudo crear la cuenta. Intentá de nuevo.', 'error');
+        }
+    }
 }
 
-// ── Admin por defecto (credenciales fijas) ──────────────
-// usuario: hospital2026  |  contraseña: 12345678
-const ADMIN_DEFAULT = { nombre: 'Administrador', usuario: 'hospital2026', password: '12345678' };
-
-(function authVerificarSesion() {
-    // Forzar siempre las credenciales por defecto (sobreescribe cualquier admin anterior)
-    authGuardarAdmin(ADMIN_DEFAULT);
-
-    // Si hay sesión activa → entrar directo sin pedir login
-    const sesion = localStorage.getItem(AUTH_SESSION);
-    if (sesion) {
-        document.getElementById('auth-screen').classList.add('hidden');
+async function authReenviarVerificacion() {
+    if (!usuarioPendienteVerificacion) {
+        alert('Iniciá sesión de nuevo con tu email y contraseña para reenviar el correo.');
+        authMostrarLogin();
         return;
     }
+    try {
+        await usuarioPendienteVerificacion.sendEmailVerification();
+        alert('Correo de verificación reenviado.');
+    } catch (err) {
+        console.error('Error al reenviar verificación:', err.message);
+        alert('No se pudo reenviar el correo. Probá de nuevo en unos minutos.');
+    }
+}
 
-    // Mostrar siempre el login (el admin por defecto ya existe)
-    document.getElementById('auth-panel-login').style.display    = '';
-    document.getElementById('auth-panel-registro').style.display = 'none';
-})();
+// Mantener sesión activa entre recargas — Firebase la persiste solo
+auth.onAuthStateChanged(function(user) {
+    if (user && user.emailVerified) {
+        document.getElementById('auth-screen').classList.add('hidden');
+    } else {
+        if (user && !user.emailVerified) {
+            auth.signOut();
+        }
+        document.getElementById('auth-screen').classList.remove('hidden');
+        authMostrarLogin();
+    }
+});
 
-// Cerrar sesión — vuelve al login sin opción de crear cuenta
+// Cerrar sesión
 document.querySelector('.nav-bottom-item').addEventListener('click', function() {
-    localStorage.removeItem(AUTH_SESSION);
-    document.getElementById('auth-screen').classList.remove('hidden');
-    authMostrarLogin();
-    document.getElementById('login-usuario').value  = '';
-    document.getElementById('login-password').value = '';
+    auth.signOut();
 });
 
 // ══════════════════════════════════════════
@@ -957,7 +987,6 @@ document.querySelector('.nav-bottom-item').addEventListener('click', function() 
 // ══════════════════════════════════════════
 
 function validarCamposRequeridos(campos) {
-    // campos: array de { id, hintId }
     let ok = true;
     campos.forEach(({ id, hintId }) => {
         const input = document.getElementById(id);
@@ -971,7 +1000,6 @@ function validarCamposRequeridos(campos) {
     return ok;
 }
 
-// Validaciones campos obligatorios — wrappers async
 const _gpOrig = guardarPaciente;
 guardarPaciente = async function() {
     const ok = validarCamposRequeridos([
@@ -1024,11 +1052,9 @@ function verDetallesVisita(indice) {
 
     const nombre = (v.nombreVisitante || "") + " " + (v.apellidoVisitante || "");
 
-    // Avatar
     const avatarEl = document.getElementById("dv-avatar");
     if (avatarEl) avatarEl.textContent = (v.nombreVisitante || "?")[0].toUpperCase();
 
-    // Nombre y chips header
     document.getElementById("dv-nombre-completo").textContent = nombre.trim() || "—";
     document.getElementById("dv-dni").textContent = v.dni || "—";
 
@@ -1039,15 +1065,12 @@ function verDetallesVisita(indice) {
         badgeTipo.textContent = v.tipo || "—";
     }
 
-    // Paciente
     document.getElementById("dv-paciente").textContent    = v.paciente    || "—";
 
-    // Visitante
     document.getElementById("dv-telefono").textContent    = v.telefono    || "—";
     document.getElementById("dv-parentesco").textContent  = v.parentesco  || "—";
     document.getElementById("dv-domicilio").textContent   = v.domicilio   || "—";
 
-    // Visita
     document.getElementById("dv-fecha").textContent        = v.fecha        || "—";
     document.getElementById("dv-tipo").textContent         = v.tipo         || "—";
     document.getElementById("dv-ingreso").textContent      = v.horaIngreso  || "—";
@@ -1163,7 +1186,6 @@ async function abrirCamara() {
   if (!modal || !video) return;
 
   try {
-    // Se configura facingMode: { ideal: 'environment' } para priorizar la cámara trasera en móviles
     streamCamara = await navigator.mediaDevices.getUserMedia({
       video: {
         width: { ideal: 640 },

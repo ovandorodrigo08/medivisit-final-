@@ -30,9 +30,9 @@
       <div class="auth-form-title">Iniciar sesión</div>
 
       <div class="auth-group">
-        <label class="auth-label">Usuario</label>
-        <input type="text" class="auth-input" id="login-usuario" placeholder="Ingresá tu usuario" autocomplete="username">
-        <div class="auth-error-msg" id="err-login-usuario">Este campo es obligatorio.</div>
+        <label class="auth-label">Email</label>
+        <input type="email" class="auth-input" id="login-email" placeholder="Ingresá tu email" autocomplete="username">
+        <div class="auth-error-msg" id="err-login-email">Este campo es obligatorio.</div>
       </div>
 
       <div class="auth-group">
@@ -42,17 +42,16 @@
       </div>
 
       <button class="auth-btn" onclick="authLogin()">Ingresar</button>
-      <!-- El link "Crear cuenta" NO aparece — se oculta por JS si ya existe admin -->
-      <div id="auth-switch-login" class="auth-switch" style="display:none;">
-        <button class="auth-switch-link" onclick="authMostrarRegistro()">Configurar administrador</button>
+      <div id="auth-switch-login" class="auth-switch">
+        ¿No tenés cuenta? <button class="auth-switch-link" onclick="authMostrarRegistro()">Crear cuenta</button>
       </div>
     </div>
 
-    <!-- ── PANEL REGISTRO (solo primera vez) ── -->
+    <!-- ── PANEL REGISTRO ── -->
     <div id="auth-panel-registro" style="display:none;">
-      <div class="auth-form-title" id="reg-form-title">⚙️ Configuración inicial — Crear administrador</div>
+      <div class="auth-form-title" id="reg-form-title">Crear cuenta</div>
       <p style="font-size:12px;color:#6b7280;margin-bottom:14px;">
-        Este paso solo ocurre una vez. Creá el usuario administrador del sistema.
+        Te vamos a enviar un correo para verificar tu cuenta.
       </p>
 
       <div class="auth-group">
@@ -62,15 +61,15 @@
       </div>
 
       <div class="auth-group">
-        <label class="auth-label">Usuario <span style="color:#ef4444;">*</span></label>
-        <input type="text" class="auth-input" id="reg-usuario" placeholder="Ej: admin" autocomplete="username">
-        <div class="auth-error-msg" id="err-reg-usuario">Este campo es obligatorio.</div>
+        <label class="auth-label">Email <span style="color:#ef4444;">*</span></label>
+        <input type="email" class="auth-input" id="reg-email" placeholder="tu.email@ejemplo.com" autocomplete="username">
+        <div class="auth-error-msg" id="err-reg-email">Este campo es obligatorio.</div>
       </div>
 
       <div class="auth-group">
         <label class="auth-label">Contraseña <span style="color:#ef4444;">*</span></label>
-        <input type="password" class="auth-input" id="reg-password" placeholder="Mínimo 4 caracteres" autocomplete="new-password">
-        <div class="auth-error-msg" id="err-reg-password">Mínimo 4 caracteres.</div>
+        <input type="password" class="auth-input" id="reg-password" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+        <div class="auth-error-msg" id="err-reg-password">Mínimo 6 caracteres.</div>
       </div>
 
       <div class="auth-group">
@@ -79,7 +78,23 @@
         <div class="auth-error-msg" id="err-reg-password2">Las contraseñas no coinciden.</div>
       </div>
 
-      <button class="auth-btn" onclick="authRegistrar()">Crear administrador</button>
+      <button class="auth-btn" onclick="authRegistrar()">Crear cuenta</button>
+      <div class="auth-switch">
+        ¿Ya tenés cuenta? <button class="auth-switch-link" onclick="authMostrarLogin()">Iniciar sesión</button>
+      </div>
+    </div>
+
+    <!-- ── PANEL: REVISÁ TU EMAIL ── -->
+    <div id="auth-panel-verificar" style="display:none;">
+      <div class="auth-form-title">Revisá tu correo</div>
+      <p style="font-size:13px;color:#374151;margin-bottom:14px;">
+        Te enviamos un email de verificación a <strong id="verificar-email-mostrado"></strong>.
+        Abrí el correo y hacé clic en el link para activar tu cuenta. Después volvé acá e iniciá sesión.
+      </p>
+      <button class="auth-btn" onclick="authMostrarLogin()">Ir a iniciar sesión</button>
+      <div class="auth-switch">
+        ¿No te llegó? <button class="auth-switch-link" onclick="authReenviarVerificacion()">Reenviar correo</button>
+      </div>
     </div>
 
   </div>
@@ -131,7 +146,6 @@
       </div>
     </div>
 
-    <!-- Tarjetas de estadísticas -->
     <div class="stats-grid">
 
       <div class="stat-card">
@@ -180,7 +194,6 @@
 
     </div>
 
-    <!-- Próximas visitas + Gráfico -->
     <div class="panel-bottom">
 
       <div class="card">
@@ -248,7 +261,6 @@
       </table>
     </div>
   </section>
-
 
   <!-- SECCIÓN: VISITAS -->
   <section class="section" id="section-visitas">
@@ -503,7 +515,7 @@
         <label class="form-label">Cama</label>
         <input type="text" class="form-input" placeholder="Ej: A" id="editar-paciente-cama">
       </div>
-    </div>  
+    </div> 
     <div class="form-group">
       <label class="form-label">Alergias</label>
       <input type="text" class="form-input" placeholder="Separar con comas" id="editar-paciente-alergias">
@@ -528,7 +540,6 @@
       <button class="modal-close" onclick="closeModal('modal-detalles-paciente')"><i class="ti ti-x"></i></button>
     </div>
 
-    <!-- Cabecera avatar + datos principales -->
     <div class="detalle-header">
       <div class="detalle-avatar" id="detalle-avatar-letra"></div>
       <div class="detalle-header-info">
@@ -541,7 +552,6 @@
       </div>
     </div>
 
-    <!-- Información personal -->
     <div class="detalle-section-title"><i class="ti ti-user"></i> Información personal</div>
     <div class="detalle-grid">
       <div class="detalle-field">
@@ -566,7 +576,6 @@
       </div>
     </div>
 
-    <!-- Información médica -->
     <div class="detalle-section-title"><i class="ti ti-stethoscope"></i> Información médica</div>
     <div class="detalle-grid">
       <div class="detalle-field detalle-field-full">
@@ -579,7 +588,6 @@
       </div>
     </div>
 
-    <!-- Visitas registradas -->
     <div class="detalle-section-title"><i class="ti ti-clipboard-heart"></i> Visitas registradas</div>
     <div id="detalle-visitas-lista"></div>
 
@@ -661,7 +669,6 @@
       </div>
     </div>
 
-    <!-- ── COMPONENTE DE CÁMARA INTEGRADO EN EL FORMULARIO ── -->
     <div class="form-group" style="grid-column: span 2;">
       <label class="form-label">Foto de Identificacion / Visita</label>
         <div id="camara-preview" class="camara-preview-box">
@@ -669,7 +676,7 @@
           <span>Sin foto capturada</span>
         </div>
         <input type="hidden" id="foto-visita-input" name="foto">
-       
+      
         <div style="display: flex; gap: 8px; margin-top: 8px;">
         <button type="button" class="btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="abrirCamara()">
           <i class="ti ti-camera"></i> Tomar foto
@@ -851,7 +858,6 @@
         </div>
       </div>
     </div>
-    <!--foto del visitante-->
     <div style="text-align: center; width: 100%; margin-bottom: 12px;">
       <img id="dv-foto" src="" alt="Foto del visitante" style="max-width: 100%; max-height: 180px; border-radius: 8px; object-fit: cover; display: none; margin: 0 auto; border: 1px solid #e2e8f0;">
     </div>
@@ -918,7 +924,7 @@
       <span class="modal-title"><i class="ti ti-camera"></i> Capturar Foto</span>
       <button type="button" class="modal-close" onclick="cerrarCamara()"><i class="ti ti-x"></i></button>
     </div>
-  
+ 
     <div class="camara-video-wrap">
       <video id="video-stream" autoplay playsinline style="width:100%; height:auto; display:block; border-radius: 8px;"></video>
       <canvas id="canvas-foto" style="display: none;"></canvas>
@@ -944,6 +950,20 @@
 
 <!-- SCRIPTS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDKEjwzrKmsGPsVKrWxNwwqZo37R9Kk06s",
+    authDomain: "medivisit-ba69b.firebaseapp.com",
+    projectId: "medivisit-ba69b",
+    storageBucket: "medivisit-ba69b.firebasestorage.app",
+    messagingSenderId: "169748544721",
+    appId: "1:169748544721:web:7f42135da9a3d95b9119f0"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+</script>
 <script src="script.js"></script>
 </body>
 </html>
